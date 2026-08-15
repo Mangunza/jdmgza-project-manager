@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/jdmgza-web" },
+
+    { "path": "./packages/types" },
+    { "path": "./packages/constants" },
+    { "path": "./packages/utils" },
+    { "path": "./packages/hooks" },
+    { "path": "./packages/theme" },
+    { "path": "./packages/ui" },
+    { "path": "./packages/api" },
+    { "path": "./packages/auth" },
+    { "path": "./packages/config" }
+  ]
+}
