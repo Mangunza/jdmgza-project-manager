@@ -2,6 +2,7 @@
 
 namespace App\Domains\Auth\Services;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -16,10 +17,14 @@ class AuthService
             'password' => $data['password'],
         ]);
 
+        $memberRole = Role::where('slug', 'member')->firstOrFail();
+
+        $user->roles()->sync([$memberRole->id]);
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return [
-            'user' => $user,
+            'user' => $user->fresh('roles'),
             'token' => $token,
         ];
     }
@@ -37,7 +42,7 @@ class AuthService
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return [
-            'user' => $user,
+            'user' => $user->fresh('roles'),
             'token' => $token,
         ];
     }

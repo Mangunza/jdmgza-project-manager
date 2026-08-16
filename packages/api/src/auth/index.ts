@@ -1,18 +1,9 @@
 export {
-  createApiClient,
-  getApiClient,
-} from "./client";
-
-export {
-  getProducts,
-} from "./products";
-
-export {
   register,
   login,
   me,
   logout,
-} from "./auth";
+} from "./authApi";
 
 export type {
   AuthRole,
@@ -22,4 +13,4 @@ export type {
   AuthResponse,
   MeResponse,
   LogoutResponse,
-} from "./auth";
+} from "./types";

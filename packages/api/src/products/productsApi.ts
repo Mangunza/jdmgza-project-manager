@@ -1,5 +1,6 @@
 import type { Product } from "@jm/types";
-import { apiClient } from "./client";
+
+import { getApiClient } from "../client";
 
 interface ProductsResponse {
   products: Product[];
@@ -9,14 +10,11 @@ interface ProductsResponse {
 }
 
 /**
- * Busca todos os produtos da API.
- *
- * Atualmente utiliza DummyJSON para testes.
- *
- * FUTURO:
- * substituir o endpoint pela API real do backend.
+ * Busca todos os produtos.
  */
 export async function getProducts(): Promise<Product[]> {
+  const apiClient = getApiClient();
+
   const response = await apiClient.get<ProductsResponse>("/products");
 
   return response.data.products;

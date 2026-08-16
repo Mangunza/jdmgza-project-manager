@@ -9,6 +9,8 @@ import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AuthLayout from "../layouts/AuthLayout";
 
+import RequireAuth from "./auth/RequireAuth";
+
 import Products from "../features/products/Products";
 
 export const router = createBrowserRouter([
@@ -33,15 +35,20 @@ export const router = createBrowserRouter([
   },
 
   {
-    element: <DashboardLayout />,
+    element: <RequireAuth />,
     children: [
       {
-        path: "/dashboard",
-        element: <Dashboard />,
-      },
-      {
-        path: "/products",
-        element: <Products />,
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "/products",
+            element: <Products />,
+          },
+        ],
       },
     ],
   },
