@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Expo generated environment types
+expo-env.d.ts
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Native build outputs
+android/.gradle/
+android/build/
+android/app/build/
+android/.cxx/
+
+# Local Android files
+android/local.properties
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary / backup files
+android.backup/
