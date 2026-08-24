@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
-use Database\Seeders\RolePermissionSeeder;
+use App\Models\Role;
+use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,7 +16,7 @@ class AuthApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(RolePermissionSeeder::class);
+        $this->seed(DatabaseSeeder::class);
     }
 
     public function test_user_can_register(): void
@@ -37,6 +39,32 @@ class AuthApiTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
         ]);
+        $this->assertDatabaseHas('role_user', [
+            'user_id' => $response->json('user.id'),
+            'role_id' => Role::query()
+                ->where('slug', 'member')
+                ->valueOrFail('id'),
+        ]);
+    }
+
+    public function test_public_registration_ignores_privileged_role_input(): void
+    {
+        $response = $this->postJson('/api/auth/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'role_slugs' => ['admin'],
+        ]);
+
+        $response->assertCreated();
+
+        $user = User::query()
+            ->where('email', 'test@example.com')
+            ->firstOrFail();
+
+        $this->assertTrue($user->hasRole('member'));
+        $this->assertFalse($user->hasRole('admin'));
     }
 
     public function test_user_can_login(): void

@@ -33,6 +33,19 @@ class StoreUserRequest extends FormRequest
                 'min:8',
                 'confirmed',
             ],
+
+            'role_slugs' => [
+                'sometimes',
+                'array',
+                'min:1',
+            ],
+
+            'role_slugs.*' => [
+                'required',
+                'string',
+                'distinct:strict',
+                'exists:roles,slug',
+            ],
         ];
     }
 }

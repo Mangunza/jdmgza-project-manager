@@ -18,7 +18,7 @@ class UsersApiTest extends TestCase
     {
         $role = Role::create([
             'name' => 'Test Role',
-            'slug' => 'test-role-' . uniqid(),
+            'slug' => 'test-role-'.uniqid(),
             'description' => 'Role utilizada nos testes.',
         ]);
 
@@ -91,6 +91,12 @@ class UsersApiTest extends TestCase
 
     public function test_user_with_create_permission_can_create_user(): void
     {
+        Role::create([
+            'name' => 'Membro',
+            'slug' => 'member',
+            'description' => 'Utilizador comum.',
+        ]);
+
         $user = $this->createUserWithPermissions([
             'users.create',
         ]);
@@ -107,7 +113,8 @@ class UsersApiTest extends TestCase
         $response
             ->assertCreated()
             ->assertJsonPath('data.name', 'Novo Utilizador')
-            ->assertJsonPath('data.email', 'novo@example.com');
+            ->assertJsonPath('data.email', 'novo@example.com')
+            ->assertJsonPath('data.roles.0', 'member');
 
         $this->assertDatabaseHas('users', [
             'email' => 'novo@example.com',
@@ -125,6 +132,68 @@ class UsersApiTest extends TestCase
         $response->assertJsonMissing([
             'password' => 'Password123!',
         ]);
+
+        $this->assertTrue($createdUser->hasRole('member'));
+    }
+
+    public function test_user_without_role_management_permission_cannot_assign_roles(): void
+    {
+        Role::create([
+            'name' => 'Administrador',
+            'slug' => 'admin',
+            'description' => 'Acesso total.',
+        ]);
+
+        $user = $this->createUserWithPermissions(['users.create']);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson('/api/users', [
+            'name' => 'Administrador Indevido',
+            'email' => 'admin-indevido@example.com',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'role_slugs' => ['admin'],
+        ]);
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseMissing('users', [
+            'email' => 'admin-indevido@example.com',
+        ]);
+    }
+
+    public function test_user_with_role_management_permission_can_assign_roles(): void
+    {
+        Role::create([
+            'name' => 'Membro',
+            'slug' => 'member',
+            'description' => 'Utilizador comum.',
+        ]);
+        Role::create([
+            'name' => 'Gestor',
+            'slug' => 'manager',
+            'description' => 'Gestão de projetos.',
+        ]);
+
+        $user = $this->createUserWithPermissions([
+            'users.create',
+            'roles.update',
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson('/api/users', [
+            'name' => 'Novo Gestor',
+            'email' => 'gestor@example.com',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'role_slugs' => ['manager'],
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.roles.0', 'manager');
     }
 
     public function test_user_with_update_permission_can_update_user(): void

@@ -7,6 +7,29 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Instalação do projeto
+
+O bootstrap da aplicação cria os roles e permissões essenciais automaticamente.
+
+Para criar o primeiro administrador durante o seed, defina **todas** as variáveis abaixo no ambiente de execução. Nunca use uma password real no repositório:
+
+```env
+INITIAL_ADMIN_NAME="Nome do administrador"
+INITIAL_ADMIN_EMAIL="admin@example.com"
+INITIAL_ADMIN_PASSWORD="uma-password-longa-e-unica"
+```
+
+Em seguida, execute:
+
+```bash
+composer setup
+```
+
+`composer setup` executa migrations. O administrador inicial é criado apenas se o
+email ainda não existir; reexecutar o seeder não altera nem promove uma conta existente. Sem as
+três variáveis, o seed cria somente os dados de autorização e o registo público continua a criar
+utilizadores com o role `member`.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
