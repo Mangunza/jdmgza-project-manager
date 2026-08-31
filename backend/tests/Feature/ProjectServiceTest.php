@@ -85,7 +85,7 @@ class ProjectServiceTest extends TestCase
             $this->fail('Era esperada uma LogicException.');
         } catch (LogicException $exception) {
             $this->assertSame(
-                'Não é possível criar um projeto numa categoria inativa.',
+                'Não é possível utilizar uma categoria inativa.',
                 $exception->getMessage(),
             );
         }
