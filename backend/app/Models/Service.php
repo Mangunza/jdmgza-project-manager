@@ -2,27 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'name',
         'description',
         'default_cost',
         'is_active',
     ];
-
-    public function getIncrementing(): bool
-    {
-        return false;
-    }
-
-    public function getKeyType(): string
-    {
-        return 'string';
-    }
 
     protected function casts(): array
     {
