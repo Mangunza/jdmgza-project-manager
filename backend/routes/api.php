@@ -3,6 +3,7 @@
 use App\Domains\Auth\Controllers\AuthController;
 use App\Domains\Auth\Controllers\AuthorizationTestController;
 use App\Domains\Projects\Controllers\ProjectController;
+use App\Domains\Projects\Controllers\ProjectServiceController;
 use App\Domains\Services\Controllers\ServiceController;
 use App\Domains\Users\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,7 @@ Route::middleware('auth:sanctum')
             ->middleware('permission:users.delete');
     });
 
+
 /*
 |--------------------------------------------------------------------------
 | Projects
@@ -90,6 +92,24 @@ Route::middleware('auth:sanctum')
 
         Route::delete('/{project}', [ProjectController::class, 'destroy'])
             ->middleware('permission:projects.delete');
+
+        Route::post('/{project}/services', [ProjectServiceController::class, 'store'])
+            ->middleware('permission:projects.update');
+
+        Route::get('/{project}/services', [ProjectServiceController::class, 'index'])
+            ->middleware('permission:projects.view');
+
+        Route::get('/{project}/services/{projectService}', [ProjectServiceController::class, 'show'])
+            ->middleware('permission:projects.view');
+
+        Route::put('/{project}/services/{projectService}', [ProjectServiceController::class, 'update'])
+            ->middleware('permission:projects.update');
+
+        Route::patch('/{project}/services/{projectService}', [ProjectServiceController::class, 'update'])
+            ->middleware('permission:projects.update');
+
+        Route::delete('/{project}/services/{projectService}', [ProjectServiceController::class, 'destroy'])
+            ->middleware('permission:projects.update');
     });
 
 /*
