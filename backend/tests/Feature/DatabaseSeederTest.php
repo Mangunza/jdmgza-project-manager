@@ -30,14 +30,24 @@ class DatabaseSeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertSame(3, Role::query()->count());
-        $this->assertSame(17, Permission::query()->count());
+        $this->assertSame(20, Permission::query()->count());
 
         $admin = Role::query()->where('slug', 'admin')->firstOrFail();
+        $manager = Role::query()->where('slug', 'manager')->firstOrFail();
         $member = Role::query()->where('slug', 'member')->firstOrFail();
 
-        $this->assertSame(17, $admin->permissions()->count());
+        $this->assertSame(20, $admin->permissions()->count());
+
         $this->assertTrue($member->hasPermission('dashboard.view'));
         $this->assertTrue($member->hasPermission('projects.view'));
+        $this->assertTrue($member->hasPermission('services.view'));
+
+        $this->assertFalse($member->hasPermission('services.create'));
+        $this->assertFalse($member->hasPermission('services.update'));
+
+        $this->assertTrue($manager->hasPermission('services.view'));
+        $this->assertTrue($manager->hasPermission('services.create'));
+        $this->assertTrue($manager->hasPermission('services.update'));
     }
 
     public function test_seed_is_idempotent(): void
@@ -46,12 +56,21 @@ class DatabaseSeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertSame(3, Role::query()->count());
-        $this->assertSame(17, Permission::query()->count());
-        $this->assertSame(17, Role::query()
+        $this->assertSame(20, Permission::query()->count());
+
+        $this->assertSame(20, Role::query()
             ->where('slug', 'admin')
             ->firstOrFail()
             ->permissions()
             ->count());
+
+        $manager = Role::query()
+            ->where('slug', 'manager')
+            ->firstOrFail();
+
+        $this->assertTrue($manager->hasPermission('services.view'));
+        $this->assertTrue($manager->hasPermission('services.create'));
+        $this->assertTrue($manager->hasPermission('services.update'));
     }
 
     public function test_seed_creates_configured_initial_administrator_once(): void

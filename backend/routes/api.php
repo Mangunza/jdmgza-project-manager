@@ -3,6 +3,7 @@
 use App\Domains\Auth\Controllers\AuthController;
 use App\Domains\Auth\Controllers\AuthorizationTestController;
 use App\Domains\Projects\Controllers\ProjectController;
+use App\Domains\Services\Controllers\ServiceController;
 use App\Domains\Users\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -89,4 +90,35 @@ Route::middleware('auth:sanctum')
 
         Route::delete('/{project}', [ProjectController::class, 'destroy'])
             ->middleware('permission:projects.delete');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Services
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:sanctum')
+    ->prefix('services')
+    ->group(function () {
+        Route::get('/', [ServiceController::class, 'index'])
+            ->middleware('permission:services.view');
+
+        Route::post('/', [ServiceController::class, 'store'])
+            ->middleware('permission:services.create');
+
+        Route::get('/{service}', [ServiceController::class, 'show'])
+            ->middleware('permission:services.view');
+
+        Route::put('/{service}', [ServiceController::class, 'update'])
+            ->middleware('permission:services.update');
+
+        Route::patch('/{service}', [ServiceController::class, 'update'])
+            ->middleware('permission:services.update');
+
+        Route::patch('/{service}/activate', [ServiceController::class, 'activate'])
+            ->middleware('permission:services.update');
+
+        Route::patch('/{service}/deactivate', [ServiceController::class, 'deactivate'])
+            ->middleware('permission:services.update');
     });

@@ -112,6 +112,22 @@ class RolePermissionSeeder extends Seeder
                 'slug' => 'projects.delete',
                 'description' => 'Permite eliminar projetos.',
             ],
+
+            [
+                'name' => 'Visualizar serviços',
+                'slug' => 'services.view',
+                'description' => 'Permite visualizar serviços do catálogo.',
+            ],
+            [
+                'name' => 'Criar serviços',
+                'slug' => 'services.create',
+                'description' => 'Permite criar serviços no catálogo.',
+            ],
+            [
+                'name' => 'Atualizar serviços',
+                'slug' => 'services.update',
+                'description' => 'Permite atualizar, ativar ou desativar serviços do catálogo.',
+            ],
         ];
 
         $permissions = [];
@@ -176,6 +192,10 @@ class RolePermissionSeeder extends Seeder
                     'projects.create',
                     'projects.update',
                     'projects.delete',
+
+                    'services.view',
+                    'services.create',
+                    'services.update',
                 ],
             ),
         );
@@ -185,8 +205,11 @@ class RolePermissionSeeder extends Seeder
                 $permissions,
                 [
                     'dashboard.view',
+
                     'projects.view',
                     'projects.update',
+
+                    'services.view',
                 ],
             ),
         );
