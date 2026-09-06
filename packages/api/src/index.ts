@@ -23,3 +23,22 @@ export type {
   MeResponse,
   LogoutResponse,
 } from "./auth";
+export {
+  getProjects,
+  getProject,
+  createProject,
+  updateProject,
+  deleteProject,
+} from "./projects";
+
+export {
+  getServices,
+} from "./services";
+
+export {
+  getProjectServices,
+  getProjectService,
+  createProjectService,
+  updateProjectService,
+  deleteProjectService,
+} from "./project-services";
