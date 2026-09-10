@@ -11,7 +11,11 @@ import AuthLayout from "../layouts/AuthLayout";
 
 import RequireAuth from "./auth/RequireAuth";
 
-import { ProjectsPage } from "../features/projects";
+import {
+  ProjectDetailPage,
+  ProjectNewPage,
+  ProjectsPage,
+} from "../features/projects";
 import Products from "../features/products/Products";
 
 export const router = createBrowserRouter([
@@ -52,6 +56,14 @@ export const router = createBrowserRouter([
           {
             path: "/projects",
             element: <ProjectsPage />,
+          },
+          {
+            path: "/projects/new",
+            element: <ProjectNewPage />,
+          },
+          {
+            path: "/projects/:projectId",
+            element: <ProjectDetailPage />,
           },
         ],
       },
