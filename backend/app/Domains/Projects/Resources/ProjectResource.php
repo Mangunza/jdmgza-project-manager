@@ -2,6 +2,7 @@
 
 namespace App\Domains\Projects\Resources;
 
+use App\Domains\Projects\Services\ProjectBudgetCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,6 +10,8 @@ class ProjectResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $budgetCalculator = app(ProjectBudgetCalculator::class);
+
         return [
             'id' => $this->id,
 
@@ -28,6 +31,10 @@ class ProjectResource extends JsonResource
             'total_budget' => $this->total_budget,
 
             'total_cost' => $this->total_cost,
+
+            'budget_percentage' => $budgetCalculator->percentage($this->resource),
+
+            'budget_status' => $budgetCalculator->status($this->resource)->value,
 
             'delivery_date' => $this->delivery_date?->format('Y-m-d'),
 
