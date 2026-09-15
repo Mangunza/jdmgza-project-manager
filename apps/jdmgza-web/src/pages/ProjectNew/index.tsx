@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Alert, Button, Input, Textarea } from "@jm/ui";
 
 import { useProjects } from "@jm/hooks";
 
@@ -76,9 +77,9 @@ export default function ProjectNewPage() {
 
       <form onSubmit={handleSubmit}>
         {error && (
-          <p role="alert">
+          <Alert>
             {error}
-          </p>
+          </Alert>
         )}
 
         <div>
@@ -86,7 +87,7 @@ export default function ProjectNewPage() {
             ID da categoria
           </label>
 
-          <input
+          <Input
             id="categoryId"
             name="categoryId"
             type="number"
@@ -106,7 +107,7 @@ export default function ProjectNewPage() {
             Nome do projeto
           </label>
 
-          <input
+          <Input
             id="name"
             name="name"
             type="text"
@@ -122,7 +123,7 @@ export default function ProjectNewPage() {
             Descrição
           </label>
 
-          <textarea
+          <Textarea
             id="description"
             name="description"
             value={description}
@@ -137,7 +138,7 @@ export default function ProjectNewPage() {
             Orçamento total
           </label>
 
-          <input
+          <Input
             id="totalBudget"
             name="totalBudget"
             type="number"
@@ -155,7 +156,7 @@ export default function ProjectNewPage() {
             Data de entrega
           </label>
 
-          <input
+          <Input
             id="deliveryDate"
             name="deliveryDate"
             type="date"
@@ -165,12 +166,12 @@ export default function ProjectNewPage() {
         </div>
 
         <div>
-          <button
+          <Button
             type="submit"
             disabled={submitting}
           >
             {submitting ? "Criando..." : "Criar projeto"}
-          </button>
+          </Button>
 
           <Link to="/projects">
             Cancelar
