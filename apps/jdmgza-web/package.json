@@ -14,6 +14,7 @@
     "@jm/api": "^1.0.0",
     "@jm/hooks": "^1.0.0",
     "@jm/types": "^1.0.0",
+    "@jm/ui": "^1.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"

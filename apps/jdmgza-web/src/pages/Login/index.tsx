@@ -11,6 +11,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import { Alert, Button, Input } from "@jm/ui";
+
 import { useAuth } from "../../app/auth/AuthProvider";
 
 interface LoginLocationState {
@@ -80,7 +82,7 @@ export default function Login() {
             Email
           </label>
 
-          <input
+          <Input
             id="email"
             type="email"
             value={email}
@@ -97,7 +99,7 @@ export default function Login() {
             Palavra-passe
           </label>
 
-          <input
+          <Input
             id="password"
             type="password"
             value={password}
@@ -110,19 +112,19 @@ export default function Login() {
         </div>
 
         {error && (
-          <p role="alert">
+          <Alert>
             {error}
-          </p>
+          </Alert>
         )}
 
-        <button
+        <Button
           type="submit"
           disabled={submitting}
         >
           {submitting
             ? "A entrar..."
             : "Entrar"}
-        </button>
+        </Button>
       </form>
     </section>
   );
