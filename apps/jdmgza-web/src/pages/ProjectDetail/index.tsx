@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { Alert, Button, Input, Select } from "@jm/ui";
+
 import {
   useProject,
   useProjectServices,
@@ -104,16 +106,16 @@ export default function ProjectDetailPage() {
           Não foi possível carregar o projeto
         </h1>
 
-        <p role="alert">
+        <Alert>
           {error.message}
-        </p>
+        </Alert>
 
-        <button
+        <Button
           type="button"
           onClick={() => void refresh()}
         >
           Tentar novamente
-        </button>
+        </Button>
       </section>
     );
   }
@@ -341,7 +343,7 @@ export default function ProjectDetailPage() {
               Serviço
             </label>
 
-            <select
+            <Select
               id="serviceId"
               name="serviceId"
               value={selectedServiceId}
@@ -371,7 +373,7 @@ export default function ProjectDetailPage() {
                   {service.name} — {service.default_cost}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           {selectedService && (
@@ -398,7 +400,7 @@ export default function ProjectDetailPage() {
               Quantidade
             </label>
 
-            <input
+            <Input
               id="quantity"
               name="quantity"
               type="number"
@@ -413,7 +415,7 @@ export default function ProjectDetailPage() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={
               submitting ||
@@ -424,27 +426,27 @@ export default function ProjectDetailPage() {
             {submitting
               ? "Processando..."
               : "Adicionar serviço"}
-          </button>
+          </Button>
         </form>
 
         {servicesError && (
-          <p role="alert">
+          <Alert>
             Não foi possível carregar os serviços:{" "}
             {servicesError.message}
-          </p>
+          </Alert>
         )}
 
         {projectServicesError && (
-          <p role="alert">
+          <Alert>
             Não foi possível carregar os serviços do projeto:{" "}
             {projectServicesError.message}
-          </p>
+          </Alert>
         )}
 
         {actionError && (
-          <p role="alert">
+          <Alert>
             {actionError}
-          </p>
+          </Alert>
         )}
 
         {projectServicesLoading ? (
@@ -487,7 +489,7 @@ export default function ProjectDetailPage() {
                       <dt>Quantidade</dt>
                       <dd>
                         {isEditing ? (
-                          <input
+                          <Input
                             type="number"
                             min="0.01"
                             step="0.01"
@@ -523,7 +525,7 @@ export default function ProjectDetailPage() {
 
                   {isEditing ? (
                     <>
-                      <button
+                      <Button
                         type="button"
                         disabled={submitting}
                         onClick={() =>
@@ -535,18 +537,18 @@ export default function ProjectDetailPage() {
                         {submitting
                           ? "Guardando..."
                           : "Guardar"}
-                      </button>
+                      </Button>
 
-                      <button
+                      <Button
                         type="button"
                         disabled={submitting}
                         onClick={cancelEditingQuantity}
                       >
                         Cancelar
-                      </button>
+                      </Button>
                     </>
                   ) : (
-                    <button
+                    <Button
                       type="button"
                       disabled={submitting}
                       onClick={() =>
@@ -557,10 +559,10 @@ export default function ProjectDetailPage() {
                       }
                     >
                       Alterar quantidade
-                    </button>
+                    </Button>
                   )}
 
-                  <button
+                  <Button
                     type="button"
                     disabled={submitting}
                     onClick={() =>
@@ -570,7 +572,7 @@ export default function ProjectDetailPage() {
                     }
                   >
                     Remover
-                  </button>
+                  </Button>
                 </article>
               );
             })}
