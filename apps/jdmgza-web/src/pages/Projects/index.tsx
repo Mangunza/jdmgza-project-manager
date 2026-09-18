@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import { Alert, Button } from "@jm/ui";
+
 import { useProjects } from "@jm/hooks";
 
 export default function ProjectsPage() {
@@ -27,11 +29,11 @@ export default function ProjectsPage() {
     return (
       <section>
         <h1>Projects</h1>
-        <p role="alert">{error.message}</p>
+        <Alert>{error.message}</Alert>
 
-        <button type="button" onClick={refresh}>
+        <Button type="button" onClick={refresh}>
           Tentar novamente
-        </button>
+        </Button>
       </section>
     );
   }
@@ -99,25 +101,25 @@ export default function ProjectsPage() {
 
       {lastPage > 1 && (
         <nav aria-label="Paginação de projetos">
-          <button
+          <Button
             type="button"
             disabled={page <= 1}
             onClick={() => setPage(page - 1)}
           >
             Anterior
-          </button>
+          </Button>
 
           <span>
             Página {page} de {lastPage}
           </span>
 
-          <button
+          <Button
             type="button"
             disabled={page >= lastPage}
             onClick={() => setPage(page + 1)}
           >
             Próxima
-          </button>
+          </Button>
         </nav>
       )}
     </section>
