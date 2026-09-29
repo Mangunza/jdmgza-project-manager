@@ -11,19 +11,21 @@ use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Request;
 
 class ServiceController extends BaseController
 {
     public function __construct(
         private readonly ServiceService $serviceService,
-    ) {
-    }
+    ) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Service::class);
 
-        $services = $this->serviceService->list();
+        $services = $this->serviceService->list(
+            $request->boolean('include_inactive'),
+        );
 
         return ServiceResource::collection($services);
     }

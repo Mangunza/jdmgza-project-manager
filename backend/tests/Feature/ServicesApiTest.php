@@ -122,6 +122,44 @@ class ServicesApiTest extends TestCase
             );
     }
 
+    public function test_user_with_view_permission_can_list_inactive_services_when_requested(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'services.view',
+        ]);
+
+        Service::create([
+            'name' => 'Desenvolvimento Web',
+            'description' => 'Serviço ativo.',
+            'default_cost' => 50000,
+            'is_active' => true,
+        ]);
+
+        Service::create([
+            'name' => 'Serviço Inativo',
+            'description' => 'Serviço desativado.',
+            'default_cost' => 10000,
+            'is_active' => false,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson(
+            '/api/services?include_inactive=true'
+        );
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonFragment([
+                'name' => 'Desenvolvimento Web',
+                'is_active' => true,
+            ])
+            ->assertJsonFragment([
+                'name' => 'Serviço Inativo',
+                'is_active' => false,
+            ]);
+    }
     public function test_user_with_view_permission_can_show_service(): void
     {
         $user = $this->createUserWithPermissions([
