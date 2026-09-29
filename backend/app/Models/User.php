@@ -18,6 +18,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'recovery_email',
+        'recovery_phone',
     ];
 
     protected $hidden = [
@@ -30,6 +32,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'recovery_email_verified_at' => 'datetime',
+            'recovery_phone_verified_at' => 'datetime',
         ];
     }
 
@@ -71,7 +75,7 @@ class User extends Authenticatable
         return $this->roles()
             ->whereHas(
                 'permissions',
-                fn ($query) => $query->where('slug', $permission),
+                fn($query) => $query->where('slug', $permission),
             )
             ->exists();
     }
@@ -86,7 +90,7 @@ class User extends Authenticatable
         return $this->roles()
             ->whereHas(
                 'permissions',
-                fn ($query) => $query->whereIn('slug', $permissions),
+                fn($query) => $query->whereIn('slug', $permissions),
             )
             ->exists();
     }

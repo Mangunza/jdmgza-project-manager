@@ -2,6 +2,7 @@
 
 use App\Domains\Auth\Controllers\AuthController;
 use App\Domains\Auth\Controllers\AuthorizationTestController;
+use App\Http\Controllers\Domains\Auth\Controllers\RecoveryContactController;
 use App\Domains\Projects\Controllers\ProjectController;
 use App\Domains\Projects\Controllers\ProjectServiceController;
 use App\Domains\Services\Controllers\ServiceController;
@@ -18,9 +19,15 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::put('/recovery-contacts', [RecoveryContactController::class, 'update']);
+        Route::post('/recovery-contacts/verification', [RecoveryContactController::class, 'requestVerification']);
+        Route::post('/recovery-contacts/verification/verify', [RecoveryContactController::class, 'verify']);
     });
 });
 
