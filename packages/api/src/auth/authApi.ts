@@ -1,18 +1,22 @@
 /**
  * Authentication API services.
  *
- * Será implementado quando conectarmos
- * o frontend ao Laravel Sanctum.
+ * Centraliza as operações de autenticação
+ * utilizadas pelo frontend e futuramente pelo mobile.
  */
 
 import { getApiClient } from "../client";
 
 import type {
   AuthResponse,
+  ForgotPasswordPayload,
+  ForgotPasswordResponse,
   LoginPayload,
   LogoutResponse,
   MeResponse,
   RegisterPayload,
+  ResetPasswordPayload,
+  ResetPasswordResponse,
 } from "./types";
 
 export async function register(
@@ -55,6 +59,30 @@ export async function logout(): Promise<LogoutResponse> {
   );
 
   localStorage.removeItem("jm_auth_token");
+
+  return response.data;
+}
+
+export async function forgotPassword(
+  payload: ForgotPasswordPayload,
+): Promise<ForgotPasswordResponse> {
+  const response =
+    await getApiClient().post<ForgotPasswordResponse>(
+      "/api/auth/forgot-password",
+      payload,
+    );
+
+  return response.data;
+}
+
+export async function resetPassword(
+  payload: ResetPasswordPayload,
+): Promise<ResetPasswordResponse> {
+  const response =
+    await getApiClient().post<ResetPasswordResponse>(
+      "/api/auth/reset-password",
+      payload,
+    );
 
   return response.data;
 }

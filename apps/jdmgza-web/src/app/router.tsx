@@ -1,13 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import Home from "../pages/Home";
-import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
 
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
-import AuthLayout from "../layouts/AuthLayout";
 
 import RequireAuth from "./auth/RequireAuth";
 
@@ -17,6 +15,10 @@ import {
   ProjectsPage,
 } from "../features/projects";
 import Products from "../features/products/Products";
+import ResetPasswordPage from "../pages/auth/ResetPasswordPage/ResetPasswordPage";
+import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage/ForgotPassword";
+import RegisterPage from "../pages/auth/RegisterPage/RegisterPage";
+import LoginPage from "../pages/auth/LoginPage/LoginPage";
 
 export const router = createBrowserRouter([
   {
@@ -26,15 +28,25 @@ export const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-    ],
-  },
 
-  {
-    element: <AuthLayout />,
-    children: [
       {
         path: "/login",
-        element: <Login />,
+        element: <LoginPage />,
+      },
+
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
+
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
       },
     ],
   },

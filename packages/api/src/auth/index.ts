@@ -3,6 +3,8 @@ export {
   login,
   me,
   logout,
+  forgotPassword,
+  resetPassword,
 } from "./authApi";
 
 export type {
@@ -13,4 +15,8 @@ export type {
   AuthResponse,
   MeResponse,
   LogoutResponse,
+  ForgotPasswordPayload,
+  ForgotPasswordResponse,
+  ResetPasswordPayload,
+  ResetPasswordResponse,
 } from "./types";

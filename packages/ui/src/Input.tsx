@@ -3,6 +3,8 @@ import type { InputHTMLAttributes } from "react";
 export interface InputProps
   extends InputHTMLAttributes<HTMLInputElement> {}
 
-export function Input(props: InputProps) {
-  return <input {...props} />;
+export function Input({ className = "", ...props }: InputProps) {
+  const classes = ["jm-input", className].filter(Boolean).join(" ");
+
+  return <input className={classes} {...props} />;
 }

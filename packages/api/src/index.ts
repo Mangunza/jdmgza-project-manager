@@ -12,6 +12,8 @@ export {
   login,
   me,
   logout,
+  forgotPassword,
+  resetPassword,
 } from "./auth";
 
 export type {
@@ -22,7 +24,12 @@ export type {
   AuthResponse,
   MeResponse,
   LogoutResponse,
+  ForgotPasswordPayload,
+  ForgotPasswordResponse,
+  ResetPasswordPayload,
+  ResetPasswordResponse,
 } from "./auth";
+
 export {
   getProjects,
   getProject,

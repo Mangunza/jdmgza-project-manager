@@ -5,6 +5,8 @@ import { Alert, Button, Input, Textarea } from "@jm/ui";
 
 import { useProjects } from "@jm/hooks";
 
+import "./styles.css";
+
 export default function ProjectNewPage() {
   const navigate = useNavigate();
   const { create } = useProjects();
@@ -65,27 +67,24 @@ export default function ProjectNewPage() {
 
   return (
     <section>
-      <header>
-        <Link to="/projects">← Voltar para projetos</Link>
+      <header className="project-new__header">
+        <Link
+          to="/projects"
+          className="jm-button jm-button--ghost jm-button--md project-new__back"
+        >
+          ← Voltar para projetos
+        </Link>
 
         <h1>Novo projeto</h1>
 
-        <p>
-          Preencha os dados para criar um novo projeto.
-        </p>
+        <p>Preencha os dados para criar um novo projeto.</p>
       </header>
 
       <form onSubmit={handleSubmit}>
-        {error && (
-          <Alert>
-            {error}
-          </Alert>
-        )}
+        {error && <Alert>{error}</Alert>}
 
         <div>
-          <label htmlFor="categoryId">
-            ID da categoria
-          </label>
+          <label htmlFor="categoryId">ID da categoria</label>
 
           <Input
             id="categoryId"
@@ -97,15 +96,11 @@ export default function ProjectNewPage() {
             required
           />
 
-          <small>
-            Informe o ID de uma categoria existente e ativa.
-          </small>
+          <small>Informe o ID de uma categoria existente e ativa.</small>
         </div>
 
         <div>
-          <label htmlFor="name">
-            Nome do projeto
-          </label>
+          <label htmlFor="name">Nome do projeto</label>
 
           <Input
             id="name"
@@ -119,9 +114,7 @@ export default function ProjectNewPage() {
         </div>
 
         <div>
-          <label htmlFor="description">
-            Descrição
-          </label>
+          <label htmlFor="description">Descrição</label>
 
           <Textarea
             id="description"
@@ -134,9 +127,7 @@ export default function ProjectNewPage() {
         </div>
 
         <div>
-          <label htmlFor="totalBudget">
-            Orçamento total
-          </label>
+          <label htmlFor="totalBudget">Orçamento total</label>
 
           <Input
             id="totalBudget"
@@ -152,9 +143,7 @@ export default function ProjectNewPage() {
         </div>
 
         <div>
-          <label htmlFor="deliveryDate">
-            Data de entrega
-          </label>
+          <label htmlFor="deliveryDate">Data de entrega</label>
 
           <Input
             id="deliveryDate"
@@ -165,15 +154,15 @@ export default function ProjectNewPage() {
           />
         </div>
 
-        <div>
-          <Button
-            type="submit"
-            disabled={submitting}
-          >
+        <div className="project-new__actions">
+          <Button type="submit" variant="primary" disabled={submitting}>
             {submitting ? "Criando..." : "Criar projeto"}
           </Button>
 
-          <Link to="/projects">
+          <Link
+            to="/projects"
+            className="jm-button jm-button--secondary jm-button--md"
+          >
             Cancelar
           </Link>
         </div>

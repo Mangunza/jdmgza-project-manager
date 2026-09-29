@@ -1,19 +1,26 @@
 @import "./reset.css";
 
 :root {
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: var(--jm-font-family);
+  font-size: 16px;
+  line-height: var(--jm-line-height-normal);
+  font-weight: var(--jm-font-weight-regular);
+  color: var(--jm-color-text-primary);
+  background: var(--jm-color-background);
 
-  line-height: 1.5;
-  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  margin: 0;
   min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }

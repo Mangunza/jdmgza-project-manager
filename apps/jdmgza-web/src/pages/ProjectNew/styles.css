@@ -1,0 +1,24 @@
+.project-new__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--jm-spacing-md);
+  margin-bottom: var(--jm-spacing-xl);
+}
+
+.project-new__header h1,
+.project-new__header p {
+  margin: 0;
+}
+
+.project-new__back {
+  align-self: flex-start;
+}
+
+.project-new__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--jm-spacing-md);
+  margin-top: var(--jm-spacing-lg);
+}

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import "./api/client";
 
-import { AuthProvider } from "./auth/AuthProvider";
+import { AuthProvider } from "@jm/auth";
 
 interface ProvidersProps {
   children: ReactNode;

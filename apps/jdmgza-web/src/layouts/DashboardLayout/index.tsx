@@ -1,19 +1,70 @@
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+
+import "./styles.css";
+
+const navigationItems = [
+  { to: "/dashboard", label: "Dashboard" },
+  { to: "/projects", label: "Projects" },
+  { to: "/products", label: "Products" },
+];
 
 export default function DashboardLayout() {
   return (
-    <div>
-      <aside>
-        <nav>
-          <Link to="/dashboard">Dashboard</Link>
-          {" | "}
-          <Link to="/products">Products</Link>
+    <div className="dashboard-layout">
+      <aside className="dashboard-sidebar">
+        <div className="dashboard-brand">
+          <span className="dashboard-brand__mark">JM</span>
+
+          <div className="dashboard-brand__text">
+            <strong>JM Project</strong>
+            <span>Management</span>
+          </div>
+        </div>
+
+        <nav className="dashboard-navigation" aria-label="Navegação principal">
+          <span className="dashboard-navigation__label">MENU</span>
+
+          {navigationItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === "/dashboard"}
+              className={({ isActive }) =>
+                [
+                  "dashboard-navigation__link",
+                  isActive ? "dashboard-navigation__link--active" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
+
+        <div className="dashboard-sidebar__footer">
+          <span>JM Project Manager</span>
+          <span>Workspace</span>
+        </div>
       </aside>
 
-      <main>
-        <Outlet />
-      </main>
+      <div className="dashboard-main">
+        <header className="dashboard-topbar">
+          <div>
+            <span className="dashboard-topbar__eyebrow">
+              PROJECT MANAGEMENT
+            </span>
+            <p className="dashboard-topbar__title">
+              Organize. Acompanhe. Entregue.
+            </p>
+          </div>
+        </header>
+
+        <main className="dashboard-content">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
