@@ -15,6 +15,7 @@ import {
   ProjectsPage,
 } from "../features/projects";
 import Products from "../features/products/Products";
+import Services from "../pages/Services";
 import ResetPasswordPage from "../pages/auth/ResetPasswordPage/ResetPasswordPage";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage/ForgotPassword";
 import RegisterPage from "../pages/auth/RegisterPage/RegisterPage";
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
           {
             path: "/products",
             element: <Products />,
+          },
+          {
+            path: "/services",
+            element: <Services />,
           },
           {
             path: "/projects",

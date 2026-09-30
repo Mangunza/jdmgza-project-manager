@@ -6,6 +6,7 @@ const navigationItems = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/projects", label: "Projects" },
   { to: "/products", label: "Products" },
+  { to: "/services", label: "Services" },
 ];
 
 export default function DashboardLayout() {

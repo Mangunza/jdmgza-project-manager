@@ -1,0 +1,105 @@
+.services-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.services-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.services-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.services-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.services-description {
+  margin: 0.5rem 0 0;
+  opacity: 0.7;
+}
+
+.services-count {
+  white-space: nowrap;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.service-card {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 0.75rem;
+}
+
+.service-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.service-card-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.service-card-header strong {
+  white-space: nowrap;
+}
+
+.service-status {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.service-status-active {
+  opacity: 1;
+}
+
+.service-card-description {
+  margin: 1rem 0 0;
+  line-height: 1.5;
+  opacity: 0.75;
+}
+
+.services-state {
+  padding: 2rem;
+  border: 1px dashed var(--color-border, #ddd);
+  border-radius: 0.75rem;
+  text-align: center;
+  opacity: 0.75;
+}
+
+.services-state p {
+  margin: 0;
+}
+
+.services-state-error {
+  border-style: solid;
+}
+
+@media (max-width: 640px) {
+  .services-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
