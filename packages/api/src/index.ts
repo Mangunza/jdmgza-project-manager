@@ -39,7 +39,12 @@ export {
 } from "./projects";
 
 export {
+  activateService,
+  createService,
+  deactivateService,
+  getService,
   getServices,
+  updateService,
 } from "./services";
 
 export {
