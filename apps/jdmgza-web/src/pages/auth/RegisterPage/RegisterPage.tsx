@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ApiError } from "@jm/api";
 import { useAuth } from "@jm/auth";
 
 import "./styles.css";
@@ -37,30 +38,23 @@ export default function RegisterPage() {
       });
 
       navigate("/dashboard");
-    } catch (err: unknown) {
-      console.error("Erro completo no registo:", err);
+    } catch (cause: unknown) {
+      if (cause instanceof ApiError) {
+        const validationMessages = Object.values(
+          cause.validationErrors,
+        ).flat();
 
-      const responseData = (
-        err as {
-          response?: {
-            data?: {
-              message?: string;
-              errors?: Record<string, string[]>;
-            };
-          };
+        if (validationMessages.length > 0) {
+          setError(validationMessages.join(" "));
+        } else {
+          setError(
+            cause.message ||
+              "Não foi possível criar a conta. Verifique os dados introduzidos e tente novamente.",
+          );
         }
-      )?.response?.data;
-
-      const validationMessages = responseData?.errors
-        ? Object.values(responseData.errors).flat()
-        : [];
-
-      if (validationMessages.length > 0) {
-        setError(validationMessages.join(" "));
       } else {
         setError(
-          responseData?.message ??
-            "Não foi possível criar a conta. Verifique os dados introduzidos e tente novamente.",
+          "Não foi possível criar a conta. Verifique os dados introduzidos e tente novamente.",
         );
       }
     } finally {

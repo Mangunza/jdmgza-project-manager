@@ -34,18 +34,30 @@ export function useProject(projectId: number): UseProjectResult {
       setLoading(false);
     }
   }, [projectId]);
-
   useEffect(() => {
     void refresh();
   }, [refresh]);
 
   const update = useCallback(
     async (payload: UpdateProjectPayload): Promise<Project> => {
-      const updatedProject = await updateProject(projectId, payload);
+      setError(null);
 
-      setProject(updatedProject);
+      try {
+        const updatedProject = await updateProject(projectId, payload);
 
-      return updatedProject;
+        setProject(updatedProject);
+
+        return updatedProject;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível atualizar o projeto.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [projectId],
   );

@@ -422,6 +422,98 @@ class ServicesApiTest extends TestCase
         ]);
     }
 
+    public function test_user_without_update_permission_cannot_deactivate_service(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'services.view',
+        ]);
+
+        $service = Service::create([
+            'name' => 'Serviço Ativo Protegido',
+            'default_cost' => 30000,
+            'is_active' => true,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->patchJson(
+            "/api/services/{$service->id}/deactivate"
+        );
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('services', [
+            'id' => $service->id,
+            'is_active' => true,
+        ]);
+    }
+
+    public function test_user_without_update_permission_cannot_activate_service(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'services.view',
+        ]);
+
+        $service = Service::create([
+            'name' => 'Serviço Inativo Protegido',
+            'default_cost' => 30000,
+            'is_active' => false,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->patchJson(
+            "/api/services/{$service->id}/activate"
+        );
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('services', [
+            'id' => $service->id,
+            'is_active' => false,
+        ]);
+    }
+
+    public function test_update_endpoint_cannot_change_service_activation_state(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'services.update',
+        ]);
+
+        $service = Service::create([
+            'name' => 'Serviço Protegido',
+            'default_cost' => 30000,
+            'is_active' => true,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->putJson(
+            "/api/services/{$service->id}",
+            [
+                'name' => 'Serviço Atualizado',
+                'is_active' => false,
+            ]
+        );
+
+        $response
+            ->assertOk()
+            ->assertJsonPath(
+                'data.name',
+                'Serviço Atualizado'
+            )
+            ->assertJsonPath(
+                'data.is_active',
+                true
+            );
+
+        $this->assertDatabaseHas('services', [
+            'id' => $service->id,
+            'name' => 'Serviço Atualizado',
+            'is_active' => true,
+        ]);
+    }
+
     public function test_delete_service_endpoint_does_not_exist(): void
     {
         $user = $this->createUserWithPermissions([

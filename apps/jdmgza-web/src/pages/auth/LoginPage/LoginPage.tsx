@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ApiError } from "@jm/api";
 import { useAuth } from "@jm/auth";
 import { Alert, Button, Input } from "@jm/ui";
 
@@ -32,10 +33,16 @@ export default function LoginPage() {
       const redirectTo = location.state?.from?.pathname ?? "/dashboard";
 
       navigate(redirectTo, { replace: true });
-    } catch {
-      setError(
-        "Não foi possível iniciar sessão. Verifique o email e a palavra-passe.",
-      );
+    } catch (cause: unknown) {
+      if (cause instanceof ApiError) {
+        if (cause.isUnauthorized) {
+          setError("Email ou palavra-passe incorretos.");
+        } else {
+          setError(cause.message);
+        }
+      } else {
+        setError("Não foi possível iniciar sessão. Tente novamente.");
+      }
     } finally {
       setLoading(false);
     }

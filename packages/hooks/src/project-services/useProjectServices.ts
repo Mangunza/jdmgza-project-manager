@@ -54,7 +54,6 @@ export function useProjectServices(
       setLoading(false);
     }
   }, [projectId]);
-
   useEffect(() => {
     void refresh();
   }, [refresh]);
@@ -63,14 +62,27 @@ export function useProjectServices(
     async (
       payload: CreateProjectServicePayload,
     ): Promise<ProjectService> => {
-      const projectService = await createProjectService(
-        projectId,
-        payload,
-      );
+      setError(null);
 
-      await refresh();
+      try {
+        const projectService = await createProjectService(
+          projectId,
+          payload,
+        );
 
-      return projectService;
+        await refresh();
+
+        return projectService;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível adicionar o serviço ao projeto.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [projectId, refresh],
   );
@@ -80,27 +92,53 @@ export function useProjectServices(
       projectServiceId: number,
       payload: UpdateProjectServicePayload,
     ): Promise<ProjectService> => {
-      const projectService = await updateProjectService(
-        projectId,
-        projectServiceId,
-        payload,
-      );
+      setError(null);
 
-      await refresh();
+      try {
+        const projectService = await updateProjectService(
+          projectId,
+          projectServiceId,
+          payload,
+        );
 
-      return projectService;
+        await refresh();
+
+        return projectService;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível atualizar o serviço do projeto.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [projectId, refresh],
   );
 
   const remove = useCallback(
     async (projectServiceId: number): Promise<void> => {
-      await deleteProjectService(
-        projectId,
-        projectServiceId,
-      );
+      setError(null);
 
-      await refresh();
+      try {
+        await deleteProjectService(
+          projectId,
+          projectServiceId,
+        );
+
+        await refresh();
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível remover o serviço do projeto.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [projectId, refresh],
   );

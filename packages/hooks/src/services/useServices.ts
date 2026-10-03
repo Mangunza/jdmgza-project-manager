@@ -59,11 +59,24 @@ export function useServices(
 
   const create = useCallback(
     async (payload: CreateServicePayload): Promise<Service> => {
-      const service = await createService(payload);
+      setError(null);
 
-      await refresh();
+      try {
+        const service = await createService(payload);
 
-      return service;
+        await refresh();
+
+        return service;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível criar o serviço.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [refresh],
   );
@@ -73,33 +86,75 @@ export function useServices(
       serviceId: string,
       payload: UpdateServicePayload,
     ): Promise<Service> => {
-      const service = await updateService(serviceId, payload);
+      setError(null);
 
-      await refresh();
+      try {
+        const service = await updateService(
+          serviceId,
+          payload,
+        );
 
-      return service;
+        await refresh();
+
+        return service;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível atualizar o serviço.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [refresh],
   );
 
   const activate = useCallback(
     async (serviceId: string): Promise<Service> => {
-      const service = await activateService(serviceId);
+      setError(null);
 
-      await refresh();
+      try {
+        const service = await activateService(serviceId);
 
-      return service;
+        await refresh();
+
+        return service;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível ativar o serviço.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [refresh],
   );
 
   const deactivate = useCallback(
     async (serviceId: string): Promise<Service> => {
-      const service = await deactivateService(serviceId);
+      setError(null);
 
-      await refresh();
+      try {
+        const service = await deactivateService(serviceId);
 
-      return service;
+        await refresh();
+
+        return service;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível desativar o serviço.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [refresh],
   );

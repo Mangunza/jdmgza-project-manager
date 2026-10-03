@@ -64,11 +64,24 @@ export function useProjects(initialPage = 1): UseProjectsResult {
 
   const create = useCallback(
     async (payload: CreateProjectPayload): Promise<Project> => {
-      const project = await createProject(payload);
+      setError(null);
 
-      await refresh();
+      try {
+        const project = await createProject(payload);
 
-      return project;
+        await refresh();
+
+        return project;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível criar o projeto.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [refresh],
   );
@@ -78,20 +91,46 @@ export function useProjects(initialPage = 1): UseProjectsResult {
       projectId: number,
       payload: UpdateProjectPayload,
     ): Promise<Project> => {
-      const project = await updateProject(projectId, payload);
+      setError(null);
 
-      await refresh();
+      try {
+        const project = await updateProject(projectId, payload);
 
-      return project;
+        await refresh();
+
+        return project;
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível atualizar o projeto.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [refresh],
   );
 
   const remove = useCallback(
     async (projectId: number): Promise<void> => {
-      await deleteProject(projectId);
+      setError(null);
 
-      await refresh();
+      try {
+        await deleteProject(projectId);
+
+        await refresh();
+      } catch (cause) {
+        const nextError =
+          cause instanceof Error
+            ? cause
+            : new Error("Não foi possível remover o projeto.");
+
+        setError(nextError);
+
+        throw nextError;
+      }
     },
     [refresh],
   );

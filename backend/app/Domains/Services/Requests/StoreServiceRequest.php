@@ -36,10 +36,6 @@ class StoreServiceRequest extends FormRequest
                 'numeric',
                 'min:0',
             ],
-            'is_active' => [
-                'sometimes',
-                'boolean',
-            ],
         ];
     }
 }

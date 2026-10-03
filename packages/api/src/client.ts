@@ -2,6 +2,10 @@ import axios, {
   type AxiosInstance,
 } from "axios";
 
+import {
+  normalizeApiError,
+} from "./errors";
+
 export interface ApiClientConfig {
   baseURL: string;
 }
@@ -28,6 +32,11 @@ export function createApiClient(
 
     return request;
   });
+
+  apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => Promise.reject(normalizeApiError(error)),
+  );
 
   return apiClient;
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { resetPassword } from "@jm/api";
+import { ApiError, resetPassword } from "@jm/api";
 
 import "./styles.css";
 
@@ -54,10 +54,22 @@ export default function ResetPasswordPage() {
       window.setTimeout(() => {
         navigate("/login");
       }, 1500);
-    } catch {
-      setError(
-        "Não foi possível redefinir a palavra-passe. O link pode ter expirado ou os dados serem inválidos.",
-      );
+    } catch (cause: unknown) {
+      if (cause instanceof ApiError) {
+        const validationMessages = Object.values(
+          cause.validationErrors,
+        ).flat();
+
+        if (validationMessages.length > 0) {
+          setError(validationMessages.join(" "));
+        } else {
+          setError(cause.message);
+        }
+      } else {
+        setError(
+          "Não foi possível redefinir a palavra-passe. O link pode ter expirado ou os dados serem inválidos.",
+        );
+      }
     } finally {
       setLoading(false);
     }

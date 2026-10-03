@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { forgotPassword } from "@jm/api";
+import { ApiError, forgotPassword } from "@jm/api";
 
 import "./styles.css";
 
@@ -24,10 +24,20 @@ export default function ForgotPasswordPage() {
       setMessage(
         "Se existir uma conta associada a este email, receberá instruções para redefinir a palavra-passe.",
       );
-    } catch {
-      setError(
-        "Não foi possível processar o pedido. Tente novamente.",
-      );
+    } catch (cause: unknown) {
+      if (cause instanceof ApiError) {
+        const validationMessages = Object.values(
+          cause.validationErrors,
+        ).flat();
+
+        if (validationMessages.length > 0) {
+          setError(validationMessages.join(" "));
+        } else {
+          setError(cause.message);
+        }
+      } else {
+        setError("Não foi possível processar o pedido. Tente novamente.");
+      }
     } finally {
       setLoading(false);
     }

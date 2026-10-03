@@ -4,6 +4,15 @@ export {
 } from "./client";
 
 export {
+  ApiError,
+} from "./errors";
+
+export type {
+  ApiErrorOptions,
+  ApiValidationErrors,
+} from "./errors";
+
+export {
   getProducts,
 } from "./products";
 
