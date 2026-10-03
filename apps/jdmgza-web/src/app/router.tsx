@@ -20,6 +20,8 @@ import ResetPasswordPage from "../pages/auth/ResetPasswordPage/ResetPasswordPage
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage/ForgotPassword";
 import RegisterPage from "../pages/auth/RegisterPage/RegisterPage";
 import LoginPage from "../pages/auth/LoginPage/LoginPage";
+import ServiceDetails from "../pages/Services/ServiceDetails";
+import ServiceNew from "../pages/Services/ServiceNew";
 
 export const router = createBrowserRouter([
   {
@@ -62,22 +64,37 @@ export const router = createBrowserRouter([
             path: "/dashboard",
             element: <Dashboard />,
           },
+
           {
             path: "/products",
             element: <Products />,
           },
+
           {
             path: "/services",
             element: <Services />,
           },
+
+          {
+            path: "/services/new",
+            element: <ServiceNew />,
+          },
+
+          {
+            path: "/services/:serviceId",
+            element: <ServiceDetails />,
+          },
+
           {
             path: "/projects",
             element: <ProjectsPage />,
           },
+
           {
             path: "/projects/new",
             element: <ProjectNewPage />,
           },
+
           {
             path: "/projects/:projectId",
             element: <ProjectDetailPage />,

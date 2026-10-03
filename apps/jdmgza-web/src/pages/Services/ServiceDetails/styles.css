@@ -1,0 +1,132 @@
+.service-details-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.service-details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.service-details-eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.service-details-header h1 {
+  margin: 0;
+}
+
+.service-details-description {
+  max-width: 700px;
+  margin: 0.75rem 0 0;
+  opacity: 0.7;
+}
+
+.service-details-back {
+  flex-shrink: 0;
+}
+
+.service-details-state {
+  padding: 2rem;
+  border: 1px solid currentColor;
+  border-radius: 12px;
+}
+
+.service-details-state p {
+  margin: 0;
+}
+
+.service-details-state-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+
+.service-details-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  border: 1px solid currentColor;
+  border-radius: 16px;
+}
+
+.service-details-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.service-details-card__header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.service-details-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.service-details-status {
+  width: fit-content;
+  font-weight: 600;
+}
+
+.service-details-status-active {
+  opacity: 1;
+}
+
+.service-details-cost {
+  font-size: 1.5rem;
+}
+
+.service-details-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.service-details-meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.service-details-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid currentColor;
+}
+
+
+@media (max-width: 768px) {
+  .service-details-header,
+  .service-details-card__header {
+    flex-direction: column;
+  }
+
+  .service-details-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .service-details-state-error {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

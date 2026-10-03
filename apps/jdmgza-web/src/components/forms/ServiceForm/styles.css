@@ -1,0 +1,24 @@
+.service-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.service-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.service-form-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.service-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--jm-color-border);
+}

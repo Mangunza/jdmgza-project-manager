@@ -9,10 +9,12 @@ export type {
 } from "./projects";
 
 export {
+  useService,
   useServices,
 } from "./services";
 
 export type {
+  UseServiceResult,
   UseServicesResult,
 } from "./services";
 
