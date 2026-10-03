@@ -1,4 +1,9 @@
-import { getService, updateService } from "@jm/api";
+import {
+  activateService,
+  deactivateService,
+  getService,
+  updateService,
+} from "@jm/api";
 import type {
   Service,
   UpdateServicePayload,
@@ -11,6 +16,8 @@ export interface UseServiceResult {
   error: Error | null;
   refresh: () => Promise<void>;
   update: (payload: UpdateServicePayload) => Promise<Service>;
+  activate: () => Promise<Service>;
+  deactivate: () => Promise<Service>;
 }
 
 export function useService(serviceId: string): UseServiceResult {
@@ -76,11 +83,63 @@ export function useService(serviceId: string): UseServiceResult {
     [serviceId],
   );
 
+  const activate = useCallback(async (): Promise<Service> => {
+    if (!serviceId) {
+      throw new Error("ID do serviço não informado.");
+    }
+
+    setError(null);
+
+    try {
+      const response = await activateService(serviceId);
+
+      setService(response);
+
+      return response;
+    } catch (cause) {
+      const nextError =
+        cause instanceof Error
+          ? cause
+          : new Error("Não foi possível ativar o serviço.");
+
+      setError(nextError);
+
+      throw nextError;
+    }
+  }, [serviceId]);
+
+  const deactivate = useCallback(async (): Promise<Service> => {
+    if (!serviceId) {
+      throw new Error("ID do serviço não informado.");
+    }
+
+    setError(null);
+
+    try {
+      const response = await deactivateService(serviceId);
+
+      setService(response);
+
+      return response;
+    } catch (cause) {
+      const nextError =
+        cause instanceof Error
+          ? cause
+          : new Error("Não foi possível desativar o serviço.");
+
+      setError(nextError);
+
+      throw nextError;
+    }
+  }, [serviceId]);
+
   return {
     service,
     loading,
     error,
     refresh,
     update,
+    activate,
+    deactivate,
   };
 }

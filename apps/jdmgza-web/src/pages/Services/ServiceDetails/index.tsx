@@ -14,6 +14,7 @@ export default function ServiceDetails() {
   const { serviceId } = useParams<{ serviceId: string }>();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [changingStatus, setChangingStatus] = useState(false);
 
   const {
     service,
@@ -21,6 +22,8 @@ export default function ServiceDetails() {
     error,
     refresh,
     update,
+    activate,
+    deactivate,
   } = useService(serviceId ?? "");
 
   async function handleUpdate(
@@ -39,6 +42,24 @@ export default function ServiceDetails() {
       setIsEditing(false);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleStatusChange(): Promise<void> {
+    if (!service) {
+      return;
+    }
+
+    setChangingStatus(true);
+
+    try {
+      if (service.is_active) {
+        await deactivate();
+      } else {
+        await activate();
+      }
+    } finally {
+      setChangingStatus(false);
     }
   }
 
@@ -233,8 +254,22 @@ export default function ServiceDetails() {
             type="button"
             variant="primary"
             onClick={() => setIsEditing(true)}
+            disabled={changingStatus}
           >
             Editar serviço
+          </Button>
+
+          <Button
+            type="button"
+            variant={service.is_active ? "danger" : "secondary"}
+            onClick={() => void handleStatusChange()}
+            disabled={changingStatus}
+          >
+            {changingStatus
+              ? "A atualizar..."
+              : service.is_active
+                ? "Desativar serviço"
+                : "Ativar serviço"}
           </Button>
         </div>
       </div>
