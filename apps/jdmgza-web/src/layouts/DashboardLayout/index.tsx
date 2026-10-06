@@ -1,5 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
 
+import { useAuth } from "@jm/auth";
+import { Button } from "@jm/ui";
+
 import "./styles.css";
 
 const navigationItems = [
@@ -10,6 +13,8 @@ const navigationItems = [
 ];
 
 export default function DashboardLayout() {
+  const { logout } = useAuth();
+
   return (
     <div className="dashboard-layout">
       <aside className="dashboard-sidebar">
@@ -22,8 +27,13 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <nav className="dashboard-navigation" aria-label="Navegação principal">
-          <span className="dashboard-navigation__label">MENU</span>
+        <nav
+          className="dashboard-navigation"
+          aria-label="Navegação principal"
+        >
+          <span className="dashboard-navigation__label">
+            MENU
+          </span>
 
           {navigationItems.map((item) => (
             <NavLink
@@ -33,7 +43,9 @@ export default function DashboardLayout() {
               className={({ isActive }) =>
                 [
                   "dashboard-navigation__link",
-                  isActive ? "dashboard-navigation__link--active" : "",
+                  isActive
+                    ? "dashboard-navigation__link--active"
+                    : "",
                 ]
                   .filter(Boolean)
                   .join(" ")
@@ -56,10 +68,21 @@ export default function DashboardLayout() {
             <span className="dashboard-topbar__eyebrow">
               PROJECT MANAGEMENT
             </span>
+
             <p className="dashboard-topbar__title">
               Organize. Acompanhe. Entregue.
             </p>
           </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              void logout();
+            }}
+          >
+            Sair
+          </Button>
         </header>
 
         <main className="dashboard-content">

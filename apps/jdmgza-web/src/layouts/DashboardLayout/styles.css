@@ -136,6 +136,7 @@
 .dashboard-topbar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   min-height: 84px;
   padding: var(--jm-spacing-lg) var(--jm-spacing-2xl);
   background: var(--jm-color-surface);

@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 
 import { useServices } from "@jm/hooks";
-import { Alert, Button } from "@jm/ui";
+import {
+  Button,
+  ErrorState,
+  LoadingState,
+} from "@jm/ui";
 
 import "./styles.css";
 
@@ -10,6 +14,7 @@ export default function Services() {
     services,
     loading,
     error,
+    refresh,
   } = useServices();
 
   if (loading) {
@@ -22,9 +27,7 @@ export default function Services() {
           </div>
         </div>
 
-        <p className="services-state">
-          A carregar serviços...
-        </p>
+        <LoadingState message="A carregar serviços..." />
       </section>
     );
   }
@@ -40,9 +43,10 @@ export default function Services() {
         </div>
 
         <div className="services-state services-state-error">
-          <Alert variant="danger">
-            {error.message}
-          </Alert>
+          <ErrorState
+            message={error.message}
+            onRetry={refresh}
+          />
         </div>
       </section>
     );
