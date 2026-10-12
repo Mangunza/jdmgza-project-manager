@@ -604,4 +604,82 @@ class ProjectServiceApiTest extends TestCase
             'total_cost' => 100000.00,
         ]);
     }
+
+    public function test_add_rejects_quantity_with_more_than_two_decimal_places(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'projects.update',
+        ]);
+
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $service = $this->createService();
+
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson(
+            "/api/projects/{$project->id}/services",
+            [
+                'service_id' => $service->id,
+                'quantity' => 1.234,
+            ]
+        );
+
+        $response
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors([
+                'quantity',
+            ]);
+
+        $this->assertDatabaseMissing('project_services', [
+            'project_id' => $project->id,
+            'service_id' => $service->id,
+        ]);
+    }
+
+    public function test_update_rejects_quantity_with_more_than_two_decimal_places(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'projects.update',
+        ]);
+
+        $project = Project::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $service = $this->createService();
+
+        $projectService = ProjectService::create([
+            'project_id' => $project->id,
+            'service_id' => $service->id,
+            'name' => $service->name,
+            'description' => $service->description,
+            'quantity' => 1,
+            'unit_cost' => 100000.00,
+            'total_cost' => 100000.00,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->patchJson(
+            "/api/projects/{$project->id}/services/{$projectService->id}",
+            [
+                'quantity' => 1.234,
+            ]
+        );
+
+        $response
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors([
+                'quantity',
+            ]);
+
+        $this->assertDatabaseHas('project_services', [
+            'id' => $projectService->id,
+            'quantity' => 1,
+            'total_cost' => 100000.00,
+        ]);
+    }
 }

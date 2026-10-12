@@ -20,6 +20,7 @@ class UpdateProjectServiceRequest extends FormRequest
             'quantity' => [
                 'required',
                 'numeric',
+                'decimal:0,2',
                 'gt:0',
             ],
         ];

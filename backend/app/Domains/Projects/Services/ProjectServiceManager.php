@@ -31,7 +31,7 @@ class ProjectServiceManager
 
             $quantity = $data['quantity'] ?? 1;
             $unitCost = (float) $service->default_cost;
-            $totalCost = $quantity * $unitCost;
+            $totalCost = round((float) $quantity * $unitCost, 2, PHP_ROUND_HALF_UP);
 
             $projectService = $project->projectServices()->create([
                 'service_id' => $service->id,
@@ -68,7 +68,7 @@ class ProjectServiceManager
                 $unitCost = (float) $projectService->unit_cost;
 
                 $projectService->quantity = $quantity;
-                $projectService->total_cost = $quantity * $unitCost;
+                $projectService->total_cost = round($quantity * $unitCost, 2, PHP_ROUND_HALF_UP);
             }
 
             $projectService->save();

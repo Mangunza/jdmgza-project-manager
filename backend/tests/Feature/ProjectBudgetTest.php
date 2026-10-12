@@ -128,4 +128,49 @@ class ProjectBudgetTest extends TestCase
             $this->calculator->status($project)
         );
     }
+
+    public function test_project_just_below_80_percent_remains_normal(): void
+    {
+        $project = Project::factory()->create([
+            'total_budget' => 100000,
+            'total_cost' => 79999.99,
+        ]);
+
+        $this->assertSame(80.0, $this->calculator->percentage($project));
+
+        $this->assertSame(
+            ProjectBudgetStatus::NORMAL,
+            $this->calculator->status($project)
+        );
+    }
+
+    public function test_project_just_below_90_percent_remains_warning(): void
+    {
+        $project = Project::factory()->create([
+            'total_budget' => 100000,
+            'total_cost' => 89999.99,
+        ]);
+
+        $this->assertSame(90.0, $this->calculator->percentage($project));
+
+        $this->assertSame(
+            ProjectBudgetStatus::WARNING,
+            $this->calculator->status($project)
+        );
+    }
+
+    public function test_project_just_below_100_percent_remains_critical(): void
+    {
+        $project = Project::factory()->create([
+            'total_budget' => 100000,
+            'total_cost' => 99999.99,
+        ]);
+
+        $this->assertSame(100.0, $this->calculator->percentage($project));
+
+        $this->assertSame(
+            ProjectBudgetStatus::CRITICAL,
+            $this->calculator->status($project)
+        );
+    }
 }

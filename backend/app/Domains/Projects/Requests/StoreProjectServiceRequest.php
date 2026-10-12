@@ -26,6 +26,7 @@ class StoreProjectServiceRequest extends FormRequest
             'quantity' => [
                 'sometimes',
                 'numeric',
+                'decimal:0,2',
                 'gt:0',
             ],
         ];

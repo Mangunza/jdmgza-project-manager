@@ -8,22 +8,16 @@ use App\Models\Project;
 class ProjectBudgetCalculator
 {
     /**
-     * Calcula a percentagem do orçamento já utilizada.
+     * Calcula a percentagem do orçamento utilizado,
+     * arredondada para apresentação.
      */
     public function percentage(Project $project): float
     {
-        $budget = (float) $project->total_budget;
-        $cost = (float) $project->total_cost;
-
-        if ($budget <= 0) {
-            return 0.0;
-        }
-
-        return round(($cost / $budget) * 100, 2);
+        return round($this->rawPercentage($project), 2);
     }
 
     /**
-     * Determina o estado atual do orçamento.
+     * Determina o estado com base na percentagem não arredondada.
      */
     public function status(Project $project): ProjectBudgetStatus
     {
@@ -33,7 +27,7 @@ class ProjectBudgetCalculator
             return ProjectBudgetStatus::NO_BUDGET;
         }
 
-        $percentage = $this->percentage($project);
+        $percentage = $this->rawPercentage($project);
 
         return match (true) {
             $percentage >= 100 => ProjectBudgetStatus::EXCEEDED,
@@ -41,5 +35,20 @@ class ProjectBudgetCalculator
             $percentage >= 80 => ProjectBudgetStatus::WARNING,
             default => ProjectBudgetStatus::NORMAL,
         };
+    }
+
+    /**
+     * Calcula a percentagem sem arredondamento intermédio.
+     */
+    private function rawPercentage(Project $project): float
+    {
+        $budget = (float) $project->total_budget;
+        $cost = (float) $project->total_cost;
+
+        if ($budget <= 0) {
+            return 0.0;
+        }
+
+        return ($cost / $budget) * 100;
     }
 }
