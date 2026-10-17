@@ -8,6 +8,7 @@ import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 
 import RequireAuth from "./auth/RequireAuth";
+import RequirePermission from "./auth/RequirePermission";
 
 import {
   ProjectDetailPage,
@@ -71,18 +72,38 @@ export const router = createBrowserRouter([
           },
 
           {
-            path: "/services",
-            element: <Services />,
-          },
+            element: (
+              <RequirePermission
+                permission="services.view"
+                redirectTo="/dashboard"
+              />
+            ),
+            children: [
+              {
+                path: "/services",
+                element: <Services />,
+              },
 
-          {
-            path: "/services/new",
-            element: <ServiceNew />,
-          },
+              {
+                element: (
+                  <RequirePermission
+                    permission="services.create"
+                    redirectTo="/services"
+                  />
+                ),
+                children: [
+                  {
+                    path: "/services/new",
+                    element: <ServiceNew />,
+                  },
+                ],
+              },
 
-          {
-            path: "/services/:serviceId",
-            element: <ServiceDetails />,
+              {
+                path: "/services/:serviceId",
+                element: <ServiceDetails />,
+              },
+            ],
           },
 
           {

@@ -13,7 +13,7 @@ const navigationItems = [
 ];
 
 export default function DashboardLayout() {
-  const { logout } = useAuth();
+  const { logout, hasPermission } = useAuth();
 
   return (
     <div className="dashboard-layout">
@@ -35,7 +35,7 @@ export default function DashboardLayout() {
             MENU
           </span>
 
-          {navigationItems.map((item) => (
+          {navigationItems.filter((item) => item.to !== "/services" || hasPermission("services.view")).map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

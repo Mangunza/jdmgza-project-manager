@@ -34,7 +34,8 @@ class AuthApiTest extends TestCase
                 'message',
                 'user',
                 'token',
-            ]);
+            ])
+            ->assertJsonPath('user.roles.0', 'member');
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
@@ -45,6 +46,20 @@ class AuthApiTest extends TestCase
                 ->where('slug', 'member')
                 ->valueOrFail('id'),
         ]);
+        $this->assertContains(
+            'services.view',
+            $response->json('user.permissions', [])
+        );
+
+        $this->assertNotContains(
+            'services.create',
+            $response->json('user.permissions', [])
+        );
+
+        $this->assertNotContains(
+            'services.update',
+            $response->json('user.permissions', [])
+        );
     }
 
     public function test_public_registration_ignores_privileged_role_input(): void
@@ -62,6 +77,7 @@ class AuthApiTest extends TestCase
         $user = User::query()
             ->where('email', 'test@example.com')
             ->firstOrFail();
+
 
         $this->assertTrue($user->hasRole('member'));
         $this->assertFalse($user->hasRole('admin'));
@@ -87,7 +103,22 @@ class AuthApiTest extends TestCase
                 'message',
                 'user',
                 'token',
-            ]);
+            ])
+            ->assertJsonPath('user.roles.0', 'member');
+        $this->assertContains(
+            'services.view',
+            $response->json('user.permissions', [])
+        );
+
+        $this->assertNotContains(
+            'services.create',
+            $response->json('user.permissions', [])
+        );
+
+        $this->assertNotContains(
+            'services.update',
+            $response->json('user.permissions', [])
+        );
     }
 
     public function test_invalid_credentials_are_rejected(): void
@@ -121,6 +152,21 @@ class AuthApiTest extends TestCase
             ->assertOk()
             ->assertJsonStructure([
                 'user',
-            ]);
+            ])
+            ->assertJsonPath('user.roles.0', 'member');
+        $this->assertContains(
+            'services.view',
+            $response->json('user.permissions', [])
+        );
+
+        $this->assertNotContains(
+            'services.create',
+            $response->json('user.permissions', [])
+        );
+
+        $this->assertNotContains(
+            'services.update',
+            $response->json('user.permissions', [])
+        );
     }
 }

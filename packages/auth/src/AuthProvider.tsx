@@ -26,6 +26,7 @@ interface AuthContextValue {
   loading: boolean;
   authError: Error | null;
   isAuthenticated: boolean;
+  hasPermission: (permission: string) => boolean;
   login: (payload: LoginPayload) => Promise<AuthUser>;
   register: (payload: RegisterPayload) => Promise<AuthUser>;
   logout: () => Promise<void>;
@@ -121,6 +122,7 @@ export function AuthProvider({
     authError,
     loading,
     isAuthenticated: user !== null,
+    hasPermission: (permission: string) => user?.permissions?.includes(permission) ?? false,
     login,
     register,
     logout,

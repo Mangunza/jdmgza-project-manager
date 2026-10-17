@@ -2,6 +2,7 @@
 
 namespace App\Domains\Auth\Controllers;
 
+use App\Domains\Users\Resources\UserResource;
 use App\Domains\Auth\Requests\LoginRequest;
 use App\Domains\Auth\Requests\RegisterRequest;
 use App\Domains\Auth\Services\AuthService;
@@ -28,7 +29,7 @@ class AuthController
 
         return response()->json([
             'message' => 'Utilizador registado com sucesso.',
-            'user' => $result['user'],
+            'user' => (new UserResource($result['user']->loadMissing('roles.permissions')))->resolve($request),
             'token' => $result['token'],
         ], 201);
     }
@@ -42,15 +43,17 @@ class AuthController
 
         return response()->json([
             'message' => 'Login efetuado com sucesso.',
-            'user' => $result['user'],
+            'user' => (new UserResource($result['user']->loadMissing('roles.permissions')))->resolve($request),
             'token' => $result['token'],
         ]);
     }
 
     public function me(Request $request): JsonResponse
     {
+        $user = $request->user()->loadMissing('roles.permissions');
+
         return response()->json([
-            'user' => $request->user(),
+            'user' => (new UserResource($user))->resolve($request),
         ]);
     }
 

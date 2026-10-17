@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useAuth } from "@jm/auth";
 
 import { useService } from "@jm/hooks";
 import type { UpdateServicePayload } from "@jm/types";
@@ -11,6 +12,8 @@ import type { ServiceFormValues } from "../../../components/forms/ServiceForm";
 import "./styles.css";
 
 export default function ServiceDetails() {
+  const { hasPermission } = useAuth();
+  const canUpdate = hasPermission("services.update");
   const { serviceId } = useParams<{ serviceId: string }>();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -136,7 +139,7 @@ export default function ServiceDetails() {
     );
   }
 
-  if (isEditing) {
+  if (isEditing && canUpdate) {
     return (
       <section className="service-details-page">
         <div className="service-details-header">
@@ -250,27 +253,31 @@ export default function ServiceDetails() {
         </div>
 
         <div className="service-details-actions">
-          <Button
-            type="button"
-            variant="primary"
-            onClick={() => setIsEditing(true)}
-            disabled={changingStatus}
-          >
-            Editar serviço
-          </Button>
+          {canUpdate && (
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => setIsEditing(true)}
+              disabled={changingStatus}
+            >
+              Editar serviço
+            </Button>
+          )}
 
-          <Button
-            type="button"
-            variant={service.is_active ? "danger" : "secondary"}
-            onClick={() => void handleStatusChange()}
-            disabled={changingStatus}
-          >
-            {changingStatus
-              ? "A atualizar..."
-              : service.is_active
-                ? "Desativar serviço"
-                : "Ativar serviço"}
-          </Button>
+          {canUpdate && (
+            <Button
+              type="button"
+              variant={service.is_active ? "danger" : "secondary"}
+              onClick={() => void handleStatusChange()}
+              disabled={changingStatus}
+            >
+              {changingStatus
+                ? "A atualizar..."
+                : service.is_active
+                  ? "Desativar serviço"
+                  : "Ativar serviço"}
+            </Button>
+          )}
         </div>
       </div>
     </section>
