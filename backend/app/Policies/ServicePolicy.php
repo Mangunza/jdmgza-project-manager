@@ -21,6 +21,14 @@ class ServicePolicy
         );
     }
 
+    public function viewInactive(User $user): bool
+    {
+        return $this->authorizationService->userHasPermission(
+            $user,
+            'services.view_inactive',
+        );
+    }
+
     public function view(User $user, Service $service): bool
     {
         return $this->authorizationService->userHasPermission(

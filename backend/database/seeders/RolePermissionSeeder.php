@@ -119,6 +119,12 @@ class RolePermissionSeeder extends Seeder
                 'description' => 'Permite visualizar serviços do catálogo.',
             ],
             [
+               'name' => 'Visualizar serviços inativos',
+               'slug' => 'services.view_inactive',
+               'description' => 'Permite visualizar serviços inativos do catálogo.',
+           ],
+
+            [
                 'name' => 'Criar serviços',
                 'slug' => 'services.create',
                 'description' => 'Permite criar serviços no catálogo.',
@@ -194,6 +200,7 @@ class RolePermissionSeeder extends Seeder
                     'projects.delete',
 
                     'services.view',
+                   'services.view_inactive',
                     'services.create',
                     'services.update',
                 ],

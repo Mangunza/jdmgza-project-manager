@@ -23,9 +23,13 @@ class ServiceController extends BaseController
     {
         $this->authorize('viewAny', Service::class);
 
-        $services = $this->serviceService->list(
-            $request->boolean('include_inactive'),
-        );
+        $includeInactive = $request->boolean('include_inactive');
+
+        if ($includeInactive) {
+            $this->authorize('viewInactive', Service::class);
+        }
+
+        $services = $this->serviceService->list($includeInactive);
 
         return ServiceResource::collection($services);
     }

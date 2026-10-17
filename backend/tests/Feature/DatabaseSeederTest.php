@@ -30,13 +30,14 @@ class DatabaseSeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertSame(3, Role::query()->count());
-        $this->assertSame(20, Permission::query()->count());
+        $this->assertSame(21, Permission::query()->count());
 
         $admin = Role::query()->where('slug', 'admin')->firstOrFail();
         $manager = Role::query()->where('slug', 'manager')->firstOrFail();
         $member = Role::query()->where('slug', 'member')->firstOrFail();
 
-        $this->assertSame(20, $admin->permissions()->count());
+        $this->assertSame(21, $admin->permissions()->count());
+        $this->assertTrue($admin->hasPermission('services.view_inactive'));
 
         $this->assertTrue($member->hasPermission('dashboard.view'));
         $this->assertTrue($member->hasPermission('projects.view'));
@@ -44,8 +45,10 @@ class DatabaseSeederTest extends TestCase
 
         $this->assertFalse($member->hasPermission('services.create'));
         $this->assertFalse($member->hasPermission('services.update'));
+        $this->assertFalse($member->hasPermission('services.view_inactive'));
 
         $this->assertTrue($manager->hasPermission('services.view'));
+        $this->assertTrue($manager->hasPermission('services.view_inactive'));
         $this->assertTrue($manager->hasPermission('services.create'));
         $this->assertTrue($manager->hasPermission('services.update'));
     }
@@ -56,9 +59,9 @@ class DatabaseSeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertSame(3, Role::query()->count());
-        $this->assertSame(20, Permission::query()->count());
+        $this->assertSame(21, Permission::query()->count());
 
-        $this->assertSame(20, Role::query()
+        $this->assertSame(21, Role::query()
             ->where('slug', 'admin')
             ->firstOrFail()
             ->permissions()
@@ -69,6 +72,7 @@ class DatabaseSeederTest extends TestCase
             ->firstOrFail();
 
         $this->assertTrue($manager->hasPermission('services.view'));
+        $this->assertTrue($manager->hasPermission('services.view_inactive'));
         $this->assertTrue($manager->hasPermission('services.create'));
         $this->assertTrue($manager->hasPermission('services.update'));
     }

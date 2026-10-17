@@ -18,12 +18,12 @@ class ServicesApiTest extends TestCase
     {
         $role = Role::create([
             'name' => 'Test Role',
-            'slug' => 'test-role-'.uniqid(),
+            'slug' => 'test-role-' . uniqid(),
             'description' => 'Role utilizada nos testes.',
         ]);
 
         $permissions = collect($slugs)->map(
-            fn (string $slug) => Permission::create([
+            fn(string $slug) => Permission::create([
                 'name' => $slug,
                 'slug' => $slug,
                 'description' => 'Permissão de teste.',
@@ -122,10 +122,11 @@ class ServicesApiTest extends TestCase
             );
     }
 
-    public function test_user_with_view_permission_can_list_inactive_services_when_requested(): void
+    public function test_user_with_view_and_view_inactive_permissions_can_list_inactive_services(): void
     {
         $user = $this->createUserWithPermissions([
             'services.view',
+            'services.view_inactive',
         ]);
 
         Service::create([
@@ -160,6 +161,7 @@ class ServicesApiTest extends TestCase
                 'is_active' => false,
             ]);
     }
+
     public function test_user_with_view_permission_can_show_service(): void
     {
         $user = $this->createUserWithPermissions([
@@ -181,18 +183,9 @@ class ServicesApiTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertJsonPath(
-                'data.id',
-                $service->id
-            )
-            ->assertJsonPath(
-                'data.name',
-                'Consultoria'
-            )
-            ->assertJsonPath(
-                'data.default_cost',
-                '75000.00'
-            );
+            ->assertJsonPath('data.id', $service->id)
+            ->assertJsonPath('data.name', 'Consultoria')
+            ->assertJsonPath('data.default_cost', '75000.00');
     }
 
     public function test_user_without_create_permission_cannot_create_service(): void
