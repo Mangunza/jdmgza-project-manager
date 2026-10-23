@@ -3,11 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@jm/auth";
 
 import { useServices } from "@jm/hooks";
-import {
-  Button,
-  ErrorState,
-  LoadingState,
-} from "@jm/ui";
+import { Button, ErrorState, LoadingState } from "@jm/ui";
 
 import "./styles.css";
 
@@ -15,16 +11,13 @@ type ServiceStatusFilter = "all" | "active" | "inactive";
 
 export default function Services() {
   const { hasPermission } = useAuth();
-  const {
-    services,
-    loading,
-    error,
-    refresh,
-  } = useServices(true);
+
+  const canViewInactive = hasPermission("services.view_inactive");
+
+  const { services, loading, error, refresh } = useServices(canViewInactive);
 
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] =
-    useState<ServiceStatusFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<ServiceStatusFilter>("all");
 
   const activeCount = useMemo(
     () => services.filter((service) => service.is_active).length,
@@ -51,8 +44,7 @@ export default function Services() {
       }
 
       const name = service.name.toLowerCase();
-      const description =
-        service.description?.toLowerCase() ?? "";
+      const description = service.description?.toLowerCase() ?? "";
 
       return (
         name.includes(normalizedSearch) ||
@@ -69,8 +61,7 @@ export default function Services() {
             <p className="services-eyebrow">Catálogo</p>
             <h1>Serviços</h1>
             <p className="services-description">
-              Gerencie os serviços disponíveis para utilização
-              nos projetos.
+              Gerencie os serviços disponíveis para utilização nos projetos.
             </p>
           </div>
         </div>
@@ -88,17 +79,13 @@ export default function Services() {
             <p className="services-eyebrow">Catálogo</p>
             <h1>Serviços</h1>
             <p className="services-description">
-              Gerencie os serviços disponíveis para utilização
-              nos projetos.
+              Gerencie os serviços disponíveis para utilização nos projetos.
             </p>
           </div>
         </div>
 
         <div className="services-state services-state-error">
-          <ErrorState
-            message={error.message}
-            onRetry={refresh}
-          />
+          <ErrorState message={error.message} onRetry={refresh} />
         </div>
       </section>
     );
@@ -113,17 +100,14 @@ export default function Services() {
           <h1>Serviços</h1>
 
           <p className="services-description">
-            Gerencie os serviços disponíveis para utilização nos
-            projetos.
+            Gerencie os serviços disponíveis para utilização nos projetos.
           </p>
         </div>
 
         <div className="services-header-actions">
           <span className="services-count">
             {filteredServices.length}{" "}
-            {filteredServices.length === 1
-              ? "serviço"
-              : "serviços"}
+            {filteredServices.length === 1 ? "serviço" : "serviços"}
           </span>
 
           {hasPermission("services.create") && (
@@ -146,13 +130,9 @@ export default function Services() {
           }
           onClick={() => setStatusFilter("all")}
         >
-          <span className="services-summary-label">
-            Total
-          </span>
+          <span className="services-summary-label">Total</span>
 
-          <strong className="services-summary-value">
-            {services.length}
-          </strong>
+          <strong className="services-summary-value">{services.length}</strong>
 
           <span className="services-summary-description">
             Todos os serviços
@@ -168,13 +148,9 @@ export default function Services() {
           }
           onClick={() => setStatusFilter("active")}
         >
-          <span className="services-summary-label">
-            Ativos
-          </span>
+          <span className="services-summary-label">Ativos</span>
 
-          <strong className="services-summary-value">
-            {activeCount}
-          </strong>
+          <strong className="services-summary-value">{activeCount}</strong>
 
           <span className="services-summary-description">
             Disponíveis para utilização
@@ -190,13 +166,9 @@ export default function Services() {
           }
           onClick={() => setStatusFilter("inactive")}
         >
-          <span className="services-summary-label">
-            Inativos
-          </span>
+          <span className="services-summary-label">Inativos</span>
 
-          <strong className="services-summary-value">
-            {inactiveCount}
-          </strong>
+          <strong className="services-summary-value">{inactiveCount}</strong>
 
           <span className="services-summary-description">
             Temporariamente desativados
@@ -206,10 +178,7 @@ export default function Services() {
 
       <div className="services-toolbar">
         <div className="services-search">
-          <label
-            htmlFor="services-search"
-            className="services-search-label"
-          >
+          <label htmlFor="services-search" className="services-search-label">
             Pesquisar serviços
           </label>
 
@@ -236,9 +205,7 @@ export default function Services() {
             className="services-filter-select"
             value={statusFilter}
             onChange={(event) =>
-              setStatusFilter(
-                event.target.value as ServiceStatusFilter,
-              )
+              setStatusFilter(event.target.value as ServiceStatusFilter)
             }
           >
             <option value="all">Todos</option>
@@ -250,9 +217,7 @@ export default function Services() {
 
       {filteredServices.length === 0 ? (
         <div className="services-state">
-          <p className="services-state-title">
-            Nenhum serviço encontrado.
-          </p>
+          <p className="services-state-title">Nenhum serviço encontrado.</p>
 
           <p className="services-state-description">
             {services.length === 0
@@ -280,14 +245,9 @@ export default function Services() {
                         : "service-status service-status-inactive"
                     }
                   >
-                    <span
-                      className="service-status-dot"
-                      aria-hidden="true"
-                    />
+                    <span className="service-status-dot" aria-hidden="true" />
 
-                    {service.is_active
-                      ? "Ativo"
-                      : "Inativo"}
+                    {service.is_active ? "Ativo" : "Inativo"}
                   </span>
 
                   <h2>{service.name}</h2>
@@ -299,14 +259,11 @@ export default function Services() {
               </div>
 
               <p className="service-card-description">
-                {service.description ||
-                  "Sem descrição disponível."}
+                {service.description || "Sem descrição disponível."}
               </p>
 
               <div className="service-card-footer">
-                <span className="service-card-meta">
-                  Serviço do catálogo
-                </span>
+                <span className="service-card-meta">Serviço do catálogo</span>
 
                 <Link
                   className="service-card-link"
