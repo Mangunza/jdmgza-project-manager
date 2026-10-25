@@ -7,7 +7,6 @@ use App\Domains\Users\Requests\UpdateUserRequest;
 use App\Domains\Users\Resources\UserResource;
 use App\Domains\Users\Services\UserService;
 use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -19,24 +18,16 @@ class UserController
 
     public function index(): AnonymousResourceCollection
     {
-        $users = $this->userService->list();
-
-        return UserResource::collection($users);
+        return UserResource::collection(
+            $this->userService->list()
+        );
     }
 
     public function store(StoreUserRequest $request): JsonResponse
     {
-        if (
-            $request->has('role_slugs')
-            && ! $request->user()?->hasPermission('roles.update')
-        ) {
-            throw new AuthorizationException(
-                'Não possui permissão para atribuir roles.',
-            );
-        }
-
         $user = $this->userService->create(
-            $request->validated()
+            $request->validated(),
+            $request->user()
         );
 
         return (new UserResource($user))
@@ -46,6 +37,8 @@ class UserController
 
     public function show(User $user): UserResource
     {
+        $user->load('roles.permissions');
+
         return new UserResource($user);
     }
 
@@ -53,17 +46,23 @@ class UserController
         UpdateUserRequest $request,
         User $user
     ): UserResource {
-        $user = $this->userService->update(
+        $updatedUser = $this->userService->update(
             $user,
-            $request->validated()
+            $request->validated(),
+            $request->user()
         );
 
-        return new UserResource($user);
+        return new UserResource($updatedUser);
     }
 
-    public function destroy(User $user): JsonResponse
-    {
-        $this->userService->delete($user);
+    public function destroy(
+        User $user,
+        \Illuminate\Http\Request $request
+    ): JsonResponse {
+        $this->userService->delete(
+            $user,
+            $request->user()
+        );
 
         return response()->json([
             'message' => 'Utilizador eliminado com sucesso.',

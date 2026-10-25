@@ -27,8 +27,7 @@ class UpdateUserRequest extends FormRequest
                 'sometimes',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')
-                    ->ignore($userId),
+                Rule::unique('users', 'email')->ignore($userId),
             ],
 
             'password' => [
@@ -36,6 +35,19 @@ class UpdateUserRequest extends FormRequest
                 'string',
                 'min:8',
                 'confirmed',
+            ],
+
+            'role_slugs' => [
+                'sometimes',
+                'array',
+                'min:1',
+            ],
+
+            'role_slugs.*' => [
+                'required',
+                'string',
+                'distinct:strict',
+                Rule::exists('roles', 'slug'),
             ],
         ];
     }

@@ -134,6 +134,26 @@ class RolePermissionSeeder extends Seeder
                 'slug' => 'services.update',
                 'description' => 'Permite atualizar, ativar ou desativar serviços do catálogo.',
             ],
+            [
+                'name' => 'Visualizar produtos',
+                'slug' => 'products.view',
+                'description' => 'Permite visualizar produtos ativos e categorias do catálogo.',
+            ],
+            [
+                'name' => 'Visualizar produtos inativos',
+                'slug' => 'products.view_inactive',
+                'description' => 'Permite visualizar produtos inativos do catálogo.',
+            ],
+            [
+                'name' => 'Criar produtos',
+                'slug' => 'products.create',
+                'description' => 'Permite criar produtos no catálogo.',
+            ],
+            [
+                'name' => 'Atualizar produtos',
+                'slug' => 'products.update',
+                'description' => 'Permite atualizar dados comerciais, stock e estado de produtos.',
+            ],
         ];
 
         $permissions = [];
@@ -203,6 +223,11 @@ class RolePermissionSeeder extends Seeder
                    'services.view_inactive',
                     'services.create',
                     'services.update',
+
+                    'products.view',
+                    'products.view_inactive',
+                    'products.create',
+                    'products.update',
                 ],
             ),
         );

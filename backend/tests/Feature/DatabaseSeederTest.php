@@ -30,13 +30,13 @@ class DatabaseSeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertSame(3, Role::query()->count());
-        $this->assertSame(21, Permission::query()->count());
+        $this->assertSame(25, Permission::query()->count());
 
         $admin = Role::query()->where('slug', 'admin')->firstOrFail();
         $manager = Role::query()->where('slug', 'manager')->firstOrFail();
         $member = Role::query()->where('slug', 'member')->firstOrFail();
 
-        $this->assertSame(21, $admin->permissions()->count());
+        $this->assertSame(25, $admin->permissions()->count());
         $this->assertTrue($admin->hasPermission('services.view_inactive'));
 
         $this->assertTrue($member->hasPermission('dashboard.view'));
@@ -59,9 +59,9 @@ class DatabaseSeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertSame(3, Role::query()->count());
-        $this->assertSame(21, Permission::query()->count());
+        $this->assertSame(25, Permission::query()->count());
 
-        $this->assertSame(21, Role::query()
+        $this->assertSame(25, Role::query()
             ->where('slug', 'admin')
             ->firstOrFail()
             ->permissions()
