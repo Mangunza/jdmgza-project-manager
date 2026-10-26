@@ -361,7 +361,7 @@ class ServiceSeeder extends Seeder
         ];
 
         foreach ($services as $service) {
-            Service::updateOrCreate(
+            Service::firstOrCreate(
                 ['name' => $service['name']],
                 $service
             );

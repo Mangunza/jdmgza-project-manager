@@ -16,8 +16,7 @@ class ProjectServiceController extends BaseController
 {
     public function __construct(
         private readonly ProjectServiceManager $projectServiceManager,
-    ) {
-    }
+    ) {}
 
     public function index(Project $project): AnonymousResourceCollection
     {
@@ -35,6 +34,8 @@ class ProjectServiceController extends BaseController
         StoreProjectServiceRequest $request,
         Project $project,
     ): ProjectServiceResource {
+        $this->authorize('update', $project);
+
         $projectService = $this->projectServiceManager->add(
             $project,
             $request->validated(),
@@ -64,6 +65,8 @@ class ProjectServiceController extends BaseController
         Project $project,
         ProjectService $projectService,
     ): ProjectServiceResource {
+
+        $this->authorize('update', $project);
         $this->ensureProjectServiceBelongsToProject(
             $project,
             $projectService,

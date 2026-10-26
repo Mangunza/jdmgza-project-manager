@@ -38,6 +38,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Projetos em que o utilizador está associado.
+     */
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'project_members')
+            ->withPivot(['role', 'status', 'added_by'])
+            ->withTimestamps();
+    }
+
+    /**
      * Roles atribuídos ao utilizador.
      */
     public function roles(): BelongsToMany

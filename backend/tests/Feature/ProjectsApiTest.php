@@ -19,12 +19,12 @@ class ProjectsApiTest extends TestCase
     {
         $role = Role::create([
             'name' => 'Test Role',
-            'slug' => 'test-role-'.uniqid(),
+            'slug' => 'test-role-' . uniqid(),
             'description' => 'Role utilizada nos testes.',
         ]);
 
         $permissions = collect($slugs)->map(
-            fn (string $slug) => Permission::create([
+            fn(string $slug) => Permission::create([
                 'name' => $slug,
                 'slug' => $slug,
                 'description' => 'Permissão de teste.',
@@ -206,7 +206,8 @@ class ProjectsApiTest extends TestCase
             'total_budget' => 10000,
         ]);
 
-        $response->assertStatus(500);
+        $response->assertUnprocessable()
+            ->assertJsonValidationErrors(['category_id']);
 
         $this->assertDatabaseMissing('projects', [
             'name' => 'Projeto Categoria Inativa',
@@ -443,6 +444,113 @@ class ProjectsApiTest extends TestCase
 
         $this->assertDatabaseHas('projects', [
             'id' => $project->id,
+        ]);
+    }
+
+
+    public function test_active_member_with_view_permission_can_view_project(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'projects.view',
+        ]);
+
+        $project = Project::factory()->create();
+
+        $project->members()->attach($user->id, [
+            'role' => 'member',
+            'status' => 'active',
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson("/api/projects/{$project->id}")
+            ->assertOk()
+            ->assertJsonPath('data.id', $project->id);
+    }
+
+    public function test_inactive_member_cannot_view_project(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'projects.view',
+        ]);
+
+        $project = Project::factory()->create();
+
+        $project->members()->attach($user->id, [
+            'role' => 'member',
+            'status' => 'inactive',
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson("/api/projects/{$project->id}")
+            ->assertForbidden();
+    }
+
+    public function test_manager_without_project_membership_cannot_view_project(): void
+    {
+        $role = $this->createRoleWithPermissions([
+            'projects.view',
+        ]);
+
+        $role->update(['slug' => 'manager']);
+
+        $manager = User::factory()->create();
+        $manager->roles()->attach($role);
+
+        $project = Project::factory()->create();
+
+        Sanctum::actingAs($manager);
+
+        $this->getJson("/api/projects/{$project->id}")
+            ->assertForbidden();
+    }
+
+    public function test_project_list_only_includes_owned_or_active_member_projects(): void
+    {
+        $user = $this->createUserWithPermissions([
+            'projects.view',
+        ]);
+
+        $ownedProject = Project::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'Projeto Próprio',
+        ]);
+
+        $activeProject = Project::factory()->create([
+            'name' => 'Projeto de Membro Activo',
+        ]);
+
+        $activeProject->members()->attach($user->id, [
+            'role' => 'member',
+            'status' => 'active',
+        ]);
+
+        $inactiveProject = Project::factory()->create([
+            'name' => 'Projeto de Membro Inactivo',
+        ]);
+
+        $inactiveProject->members()->attach($user->id, [
+            'role' => 'member',
+            'status' => 'inactive',
+        ]);
+
+        Project::factory()->create([
+            'name' => 'Projeto Sem Associação',
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/projects')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonFragment(['name' => 'Projeto Próprio'])
+            ->assertJsonFragment(['name' => 'Projeto de Membro Activo'])
+            ->assertJsonMissing(['name' => 'Projeto de Membro Inactivo'])
+            ->assertJsonMissing(['name' => 'Projeto Sem  Associação']);
+
+        $this->assertDatabaseHas('projects', [
+            'id' => $ownedProject->id,
         ]);
     }
 }

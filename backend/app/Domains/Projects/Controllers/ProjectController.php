@@ -16,18 +16,30 @@ class ProjectController extends BaseController
 {
     public function __construct(
         private readonly ProjectService $projectService,
-    ) {
-    }
+    ) {}
 
     public function index(): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Project::class);
 
-        $projects = Project::query()
-            ->where('user_id', auth()->id())
+        $user = auth()->user();
+
+        $query = Project::query()
             ->with(['category'])
-            ->latest()
-            ->paginate(15);
+            ->latest();
+
+        if (! $user->hasRole('admin')) {
+            $query->where(function ($projectQuery) use ($user) {
+                $projectQuery->where('user_id', $user->id)
+                    ->orWhereHas('members', function ($memberQuery) use ($user) {
+                        $memberQuery
+                            ->where('users.id', $user->id)
+                            ->where('project_members.status', 'active');
+                    });
+            });
+        }
+
+        $projects = $query->paginate(15);
 
         return ProjectResource::collection($projects);
     }

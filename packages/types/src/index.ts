@@ -1,4 +1,12 @@
-export type { Product } from "./product";
+export type {
+  CreateProductPayload,
+  AdjustProductStockPayload,
+  Product,
+  ProductCategory,
+  ProductFilters,
+  UpdateProductPayload,
+  StockMovement,
+} from "./product";
 
 export type {
   Project,
@@ -25,3 +33,9 @@ export type {
   PaginationMeta,
   PaginatedResponse,
 } from "./pagination";
+
+export type {
+  User,
+  CreateUserPayload,
+  UpdateUserPayload,
+} from "./user";

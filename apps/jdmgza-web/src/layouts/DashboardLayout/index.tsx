@@ -6,6 +6,7 @@ import { Button } from "@jm/ui";
 import "./styles.css";
 
 const navigationItems = [
+  { to: "/users", label: "Utilizadores" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/projects", label: "Projects" },
   { to: "/products", label: "Products" },
@@ -35,7 +36,12 @@ export default function DashboardLayout() {
             MENU
           </span>
 
-          {navigationItems.filter((item) => item.to !== "/services" || hasPermission("services.view")).map((item) => (
+          {navigationItems.filter((item) => {
+            if (item.to === "/users") return hasPermission("users.view");
+            if (item.to === "/services") return hasPermission("services.view");
+            if (item.to === "/products") return hasPermission("products.view");
+            return true;
+          }).map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

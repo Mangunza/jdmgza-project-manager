@@ -39,6 +39,26 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(25, $admin->permissions()->count());
         $this->assertTrue($admin->hasPermission('services.view_inactive'));
 
+        foreach ([
+            'products.view',
+            'products.view_inactive',
+            'products.create',
+            'products.update',
+        ] as $permission) {
+            $this->assertTrue(
+                $admin->hasPermission($permission),
+                "O administrador deve ter a permissao {$permission}.",
+            );
+            $this->assertTrue(
+                $manager->hasPermission($permission),
+                "O gestor deve ter a permissao {$permission}.",
+            );
+            $this->assertFalse(
+                $member->hasPermission($permission),
+                "O membro nao deve ter a permissao {$permission}.",
+            );
+        }
+
         $this->assertTrue($member->hasPermission('dashboard.view'));
         $this->assertTrue($member->hasPermission('projects.view'));
         $this->assertTrue($member->hasPermission('services.view'));

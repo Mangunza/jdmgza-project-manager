@@ -31,4 +31,12 @@ class Category extends Model
     {
         return $this->hasMany(Project::class);
     }
+
+    /**
+     * Produtos pertencentes a esta categoria.
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }

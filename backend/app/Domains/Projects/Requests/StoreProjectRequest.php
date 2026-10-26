@@ -4,6 +4,7 @@ namespace App\Domains\Projects\Requests;
 
 use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreProjectRequest extends FormRequest
 {
@@ -21,7 +22,8 @@ class StoreProjectRequest extends FormRequest
             'category_id' => [
                 'required',
                 'integer',
-                'exists:categories,id',
+                Rule::exists('categories', 'id')
+                    ->where('is_active', true),
             ],
 
             'name' => [

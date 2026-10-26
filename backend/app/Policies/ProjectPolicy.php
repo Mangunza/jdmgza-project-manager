@@ -10,8 +10,7 @@ class ProjectPolicy
 {
     public function __construct(
         private readonly AuthorizationService $authorizationService,
-    ) {
-    }
+    ) {}
 
     public function viewAny(User $user): bool
     {
@@ -23,11 +22,11 @@ class ProjectPolicy
 
     public function view(User $user, Project $project): bool
     {
-        return $project->user_id === $user->id
-            && $this->authorizationService->userHasPermission(
-                $user,
-                'projects.view',
-            );
+        return $this->canAccessProject(
+            $user,
+            $project,
+            'projects.view',
+        );
     }
 
     public function create(User $user): bool
@@ -40,19 +39,43 @@ class ProjectPolicy
 
     public function update(User $user, Project $project): bool
     {
-        return $project->user_id === $user->id
-            && $this->authorizationService->userHasPermission(
-                $user,
-                'projects.update',
-            );
+        return $this->canAccessProject(
+            $user,
+            $project,
+            'projects.update',
+        );
     }
 
     public function delete(User $user, Project $project): bool
     {
-        return $project->user_id === $user->id
+        return $this->canAccessProject(
+            $user,
+            $project,
+            'projects.delete',
+        );
+    }
+
+    private function canAccessProject(
+        User $user,
+        Project $project,
+        string $permission,
+    ): bool {
+        $isOwner = (int) $project->user_id === (int) $user->id;
+
+        $isAdmin = $this->authorizationService->userHasRole(
+            $user,
+            'admin',
+        );
+
+        $isActiveMember = $project->members()
+            ->where('users.id', $user->id)
+            ->wherePivot('status', 'active')
+            ->exists();
+
+        return ($isAdmin || $isOwner || $isActiveMember)
             && $this->authorizationService->userHasPermission(
                 $user,
-                'projects.delete',
+                $permission,
             );
     }
 }

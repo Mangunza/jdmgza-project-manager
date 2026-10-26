@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProjectRequest extends FormRequest
 {
@@ -24,6 +25,12 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             //
+            'category_id' => [
+                'sometimes',
+                'integer',
+                Rule::exists('categories', 'id')
+                    ->where('is_active', true),
+            ],
         ];
     }
 }

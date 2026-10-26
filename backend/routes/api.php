@@ -6,6 +6,8 @@ use App\Http\Controllers\Domains\Auth\Controllers\RecoveryContactController;
 use App\Domains\Projects\Controllers\ProjectController;
 use App\Domains\Projects\Controllers\ProjectServiceController;
 use App\Domains\Services\Controllers\ServiceController;
+use App\Domains\Products\Controllers\CategoryController;
+use App\Domains\Products\Controllers\ProductController;
 use App\Domains\Users\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -148,4 +150,32 @@ Route::middleware('auth:sanctum')
 
         Route::patch('/{service}/deactivate', [ServiceController::class, 'deactivate'])
             ->middleware('permission:services.update');
+    });
+
+Route::middleware('auth:sanctum')
+    ->prefix('categories')
+    ->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])
+            ->middleware('permission:products.view');
+    });
+
+Route::middleware('auth:sanctum')
+    ->prefix('products')
+    ->group(function () {
+        Route::get('/', [ProductController::class, 'index'])
+            ->middleware('permission:products.view');
+        Route::post('/', [ProductController::class, 'store'])
+            ->middleware('permission:products.create');
+        Route::get('/{product}', [ProductController::class, 'show'])
+            ->middleware('permission:products.view');
+        Route::patch('/{product}', [ProductController::class, 'update'])
+            ->middleware('permission:products.update');
+        Route::patch('/{product}/stock', [ProductController::class, 'adjustStock'])
+            ->middleware('permission:products.update');
+        Route::get('/{product}/stock-movements', [ProductController::class, 'stockMovements'])
+            ->middleware('permission:products.view');
+        Route::patch('/{product}/activate', [ProductController::class, 'activate'])
+            ->middleware('permission:products.update');
+        Route::patch('/{product}/deactivate', [ProductController::class, 'deactivate'])
+            ->middleware('permission:products.update');
     });

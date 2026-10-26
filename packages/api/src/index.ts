@@ -13,7 +13,14 @@ export type {
 } from "./errors";
 
 export {
+  adjustProductStock,
+  createProduct,
+  getProduct,
+  getProductCategories,
+  getStockMovements,
   getProducts,
+  setProductActive,
+  updateProduct,
 } from "./products";
 
 export {
@@ -63,3 +70,11 @@ export {
   updateProjectService,
   deleteProjectService,
 } from "./project-services";
+
+export {
+  getUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "./users/usersApi";

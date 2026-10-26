@@ -23,6 +23,7 @@ import RegisterPage from "../pages/auth/RegisterPage/RegisterPage";
 import LoginPage from "../pages/auth/LoginPage/LoginPage";
 import ServiceDetails from "../pages/Services/ServiceDetails";
 import ServiceNew from "../pages/Services/ServiceNew";
+import { UsersPage } from "../features/users";
 
 export const router = createBrowserRouter([
   {
@@ -67,8 +68,33 @@ export const router = createBrowserRouter([
           },
 
           {
-            path: "/products",
-            element: <Products />,
+            element: (
+              <RequirePermission
+                permission="users.view"
+                redirectTo="/dashboard"
+              />
+            ),
+            children: [
+              {
+                path: "/users",
+                element: <UsersPage />,
+              },
+            ],
+          },
+
+          {
+            element: (
+              <RequirePermission
+                permission="products.view"
+                redirectTo="/dashboard"
+              />
+            ),
+            children: [
+              {
+                path: "/products",
+                element: <Products />,
+              },
+            ],
           },
 
           {
