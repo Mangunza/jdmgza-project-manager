@@ -75,6 +75,10 @@ class UserService
         $hasRoleChanges = array_key_exists('role_slugs', $data);
         $roleSlugs = $data['role_slugs'] ?? [];
 
+        if ($hasRoleChanges) {
+            $this->assertCanAssignRoles($actor);
+        }
+
         $adminRole = null;
 
         if ($hasRoleChanges) {
@@ -166,6 +170,11 @@ class UserService
 
     public function delete(User $user, User $actor): void
     {
+        if (! $actor->hasPermission('users.delete')) {
+            throw new AuthorizationException(
+                'Não possui permissão para eliminar usuários.'
+            );
+        }
         DB::transaction(function () use ($user): void {
             // A mesma ordem de bloqueio é usada em update().
             $adminRole = $this->lockAdminRole();

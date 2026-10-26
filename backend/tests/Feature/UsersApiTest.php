@@ -225,6 +225,31 @@ class UsersApiTest extends TestCase
         ]);
     }
 
+
+    public function test_user_service_rejects_delete_without_delete_permission(): void
+    {
+        $actor = $this->createUserWithPermissions([]);
+        $target = User::factory()->create();
+
+        try {
+            app(\App\Domains\Users\Services\UserService::class)
+                ->delete($target, $actor);
+
+            $this->fail(
+                'Era esperada uma exceção por falta de permissão.'
+            );
+        } catch (\Illuminate\Auth\Access\AuthorizationException $exception) {
+            $this->assertSame(
+                'Não possui permissão para eliminar usuários.',
+                $exception->getMessage()
+            );
+        }
+
+        $this->assertDatabaseHas('users', [
+            'id' => $target->id,
+        ]);
+    }
+
     public function test_user_with_delete_permission_can_delete_user(): void
     {
         $user = $this->createUserWithPermissions([
@@ -248,6 +273,38 @@ class UsersApiTest extends TestCase
         $this->assertDatabaseMissing('users', [
             'id' => $target->id,
         ]);
+    }
+
+
+    public function test_user_without_role_management_permission_cannot_change_roles_on_update(): void
+    {
+        $memberRole = Role::create([
+            'name' => 'Membro',
+            'slug' => 'member',
+            'description' => 'Utilizador comum.',
+        ]);
+
+        Role::create([
+            'name' => 'Gestor',
+            'slug' => 'manager',
+            'description' => 'Gestão de projetos.',
+        ]);
+
+        $actor = $this->createUserWithPermissions([
+            'users.update',
+        ]);
+
+        $target = User::factory()->create();
+        $target->roles()->attach($memberRole);
+
+        Sanctum::actingAs($actor);
+
+        $this->putJson("/api/users/{$target->id}", [
+            'role_slugs' => ['manager'],
+        ])->assertForbidden();
+
+        $this->assertTrue($target->fresh()->hasRole('member'));
+        $this->assertFalse($target->fresh()->hasRole('manager'));
     }
 
     public function test_user_without_admin_role_cannot_assign_admin_on_update(): void
