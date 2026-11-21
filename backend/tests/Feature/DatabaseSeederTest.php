@@ -29,14 +29,14 @@ class DatabaseSeederTest extends TestCase
     {
         $this->seed(DatabaseSeeder::class);
 
-        $this->assertSame(3, Role::query()->count());
-        $this->assertSame(25, Permission::query()->count());
+        $this->assertSame(4, Role::query()->count());
+        $this->assertSame(26, Permission::query()->count());
 
         $admin = Role::query()->where('slug', 'admin')->firstOrFail();
         $manager = Role::query()->where('slug', 'manager')->firstOrFail();
         $member = Role::query()->where('slug', 'member')->firstOrFail();
 
-        $this->assertSame(25, $admin->permissions()->count());
+        $this->assertSame(26, $admin->permissions()->count());
         $this->assertTrue($admin->hasPermission('services.view_inactive'));
 
         foreach ([
@@ -78,10 +78,10 @@ class DatabaseSeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
         $this->seed(DatabaseSeeder::class);
 
-        $this->assertSame(3, Role::query()->count());
-        $this->assertSame(25, Permission::query()->count());
+        $this->assertSame(4, Role::query()->count());
+        $this->assertSame(26, Permission::query()->count());
 
-        $this->assertSame(25, Role::query()
+        $this->assertSame(26, Role::query()
             ->where('slug', 'admin')
             ->firstOrFail()
             ->permissions()

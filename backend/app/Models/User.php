@@ -48,6 +48,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Entidade cliente associada a esta conta, quando aplicável.
+     */
+    public function client(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Client::class);
+    }
+
+    /**
      * Roles atribuídos ao utilizador.
      */
     public function roles(): BelongsToMany

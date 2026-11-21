@@ -67,4 +67,9 @@ class Project extends Model
     {
         return $this->hasMany(ProjectService::class);
     }
+
+    public function clientAccesses(): HasMany
+    {
+        return $this->hasMany(ClientProjectAccess::class);
+    }
 }

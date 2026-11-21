@@ -60,22 +60,52 @@ class ProjectPolicy
         Project $project,
         string $permission,
     ): bool {
+        if (! $this->authorizationService->userHasPermission(
+            $user,
+            $permission,
+        )) {
+            return false;
+        }
+
+        if ($this->authorizationService->userHasRole($user, 'admin')) {
+            return true;
+        }
+
+        /*
+         * Uma conta com papel client só pode consultar projetos
+         * explicitamente autorizados para o respetivo registo.
+         *
+         * Não pode obter acesso por ser proprietária ou membro
+         * de um projeto.
+         */
+        if ($this->authorizationService->userHasRole($user, 'client')) {
+            if ($permission !== 'projects.view') {
+                return false;
+            }
+
+            $client = $user->client()
+                ->where('is_active', true)
+                ->first();
+
+            if (! $client) {
+                return false;
+            }
+
+            return $project->clientAccesses()
+                ->where('client_id', $client->id)
+                ->where('status', 'active')
+                ->exists();
+        }
+
         $isOwner = (int) $project->user_id === (int) $user->id;
 
-        $isAdmin = $this->authorizationService->userHasRole(
-            $user,
-            'admin',
-        );
+        if ($isOwner) {
+            return true;
+        }
 
-        $isActiveMember = $project->members()
+        return $project->members()
             ->where('users.id', $user->id)
             ->wherePivot('status', 'active')
             ->exists();
-
-        return ($isAdmin || $isOwner || $isActiveMember)
-            && $this->authorizationService->userHasPermission(
-                $user,
-                $permission,
-            );
     }
 }

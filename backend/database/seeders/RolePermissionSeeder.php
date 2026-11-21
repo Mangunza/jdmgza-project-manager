@@ -93,6 +93,12 @@ class RolePermissionSeeder extends Seeder
             ],
 
             [
+                'name' => 'Convidar clientes',
+                'slug' => 'clients.invite',
+                'description' => 'Permite enviar convites de acesso ao portal de clientes.',
+            ],
+
+            [
                 'name' => 'Visualizar projetos',
                 'slug' => 'projects.view',
                 'description' => 'Permite visualizar projetos.',
@@ -119,10 +125,10 @@ class RolePermissionSeeder extends Seeder
                 'description' => 'Permite visualizar serviços do catálogo.',
             ],
             [
-               'name' => 'Visualizar serviços inativos',
-               'slug' => 'services.view_inactive',
-               'description' => 'Permite visualizar serviços inativos do catálogo.',
-           ],
+                'name' => 'Visualizar serviços inativos',
+                'slug' => 'services.view_inactive',
+                'description' => 'Permite visualizar serviços inativos do catálogo.',
+            ],
 
             [
                 'name' => 'Criar serviços',
@@ -201,6 +207,14 @@ class RolePermissionSeeder extends Seeder
             ],
         );
 
+        $client = Role::updateOrCreate(
+            ['slug' => 'client'],
+            [
+                'name' => 'Cliente',
+                'description' => 'Acesso de leitura aos projetos explicitamente autorizados.',
+            ],
+        );
+
         $admin->permissions()->sync(
             array_values($permissions),
         );
@@ -213,6 +227,7 @@ class RolePermissionSeeder extends Seeder
 
                     'users.view',
                     'users.update',
+                    'clients.invite',
 
                     'projects.view',
                     'projects.create',
@@ -220,7 +235,7 @@ class RolePermissionSeeder extends Seeder
                     'projects.delete',
 
                     'services.view',
-                   'services.view_inactive',
+                    'services.view_inactive',
                     'services.create',
                     'services.update',
 
@@ -242,6 +257,15 @@ class RolePermissionSeeder extends Seeder
                     'projects.update',
 
                     'services.view',
+                ],
+            ),
+        );
+
+        $client->permissions()->sync(
+            $this->permissionsFor(
+                $permissions,
+                [
+                    'projects.view',
                 ],
             ),
         );

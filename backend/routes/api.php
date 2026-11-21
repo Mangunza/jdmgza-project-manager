@@ -9,6 +9,7 @@ use App\Domains\Services\Controllers\ServiceController;
 use App\Domains\Products\Controllers\CategoryController;
 use App\Domains\Products\Controllers\ProductController;
 use App\Domains\Users\Controllers\UserController;
+use App\Domains\Clients\Controllers\ClientInvitationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -73,6 +74,27 @@ Route::middleware('auth:sanctum')
         Route::delete('/{user}', [UserController::class, 'destroy'])
             ->middleware('permission:users.delete');
     });
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Client Invitations
+|--------------------------------------------------------------------------
+*/
+
+// A aceitação é pública: o token é a prova do convite.
+Route::post(
+    '/client-invitations/accept',
+    [ClientInvitationController::class, 'accept'],
+);
+
+// Apenas utilizadores com permissão para convidar clientes.
+Route::middleware(['auth:sanctum', 'permission:clients.invite'])
+    ->post(
+        '/clients/{client}/invitations',
+        [ClientInvitationController::class, 'store'],
+    );
 
 
 /*

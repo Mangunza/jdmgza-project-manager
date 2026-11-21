@@ -7,6 +7,7 @@ use App\Domains\Projects\Requests\UpdateProjectRequest;
 use App\Domains\Projects\Resources\ProjectResource;
 use App\Domains\Projects\Services\ProjectService;
 use App\Http\Controllers\Controller as BaseController;
+use App\Models\ClientProjectAccess;
 use App\Models\Project;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -30,12 +31,47 @@ class ProjectController extends BaseController
 
         if (! $user->hasRole('admin')) {
             $query->where(function ($projectQuery) use ($user) {
-                $projectQuery->where('user_id', $user->id)
-                    ->orWhereHas('members', function ($memberQuery) use ($user) {
-                        $memberQuery
-                            ->where('users.id', $user->id)
-                            ->where('project_members.status', 'active');
-                    });
+                /*
+                 * Clientes: apenas projetos com concessão ativa
+                 * associados ao registo de cliente da própria conta.
+                 */
+                if ($user->hasRole('client')) {
+                    $projectQuery->whereHas(
+                        'clientAccesses',
+                        function ($accessQuery) use ($user) {
+                            $accessQuery
+                                ->where(
+                                    'status',
+                                    ClientProjectAccess::STATUS_ACTIVE,
+                                )
+                                ->whereHas(
+                                    'client',
+                                    function ($clientQuery) use ($user) {
+                                        $clientQuery
+                                            ->where('user_id', $user->id)
+                                            ->where('is_active', true);
+                                    },
+                                );
+                        },
+                    );
+
+                    return;
+                }
+
+                /*
+                 * Utilizadores internos: projetos próprios ou
+                 * projetos nos quais são membros ativos.
+                 */
+                $projectQuery
+                    ->where('user_id', $user->id)
+                    ->orWhereHas(
+                        'members',
+                        function ($memberQuery) use ($user) {
+                            $memberQuery
+                                ->where('users.id', $user->id)
+                                ->where('project_members.status', 'active');
+                        },
+                    );
             });
         }
 

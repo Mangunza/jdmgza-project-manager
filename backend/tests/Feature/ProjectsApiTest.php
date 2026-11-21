@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Client;
+use App\Models\ClientProjectAccess;
 use App\Models\Permission;
 use App\Models\Project;
 use App\Models\Role;
@@ -552,5 +554,148 @@ class ProjectsApiTest extends TestCase
         $this->assertDatabaseHas('projects', [
             'id' => $ownedProject->id,
         ]);
+    }
+
+    public function test_client_can_list_projects_with_active_access(): void
+    {
+        $role = $this->createRoleWithPermissions(['projects.view']);
+        $role->update(['slug' => 'client']);
+
+        $user = User::factory()->create();
+        $user->roles()->attach($role);
+
+        $client = Client::create([
+            'name' => 'Cliente Autorizado',
+            'email' => $user->email,
+            'is_active' => true,
+        ]);
+
+        $client->user()->associate($user);
+        $client->save();
+
+        $project = Project::factory()->create([
+            'name' => 'Projecto Autorizado',
+        ]);
+
+        ClientProjectAccess::create([
+            'client_id' => $client->id,
+            'project_id' => $project->id,
+            'status' => ClientProjectAccess::STATUS_ACTIVE,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/projects')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'name' => 'Projecto Autorizado',
+            ]);
+    }
+
+    public function test_client_list_excludes_revoked_and_other_client_projects(): void
+    {
+        $role = $this->createRoleWithPermissions(['projects.view']);
+        $role->update(['slug' => 'client']);
+
+        $user = User::factory()->create();
+        $user->roles()->attach($role);
+
+        $client = Client::create([
+            'name' => 'Cliente A',
+            'email' => $user->email,
+            'is_active' => true,
+        ]);
+
+        $client->user()->associate($user);
+        $client->save();
+
+        $otherClient = Client::create([
+            'name' => 'Cliente B',
+            'email' => 'cliente-b@example.test',
+            'is_active' => true,
+        ]);
+
+        $authorizedProject = Project::factory()->create([
+            'name' => 'Projecto Activo do Cliente A',
+        ]);
+
+        $revokedProject = Project::factory()->create([
+            'name' => 'Projecto Revogado do Cliente A',
+        ]);
+
+        $otherClientProject = Project::factory()->create([
+            'name' => 'Projecto do Cliente B',
+        ]);
+
+        ClientProjectAccess::create([
+            'client_id' => $client->id,
+            'project_id' => $authorizedProject->id,
+            'status' => ClientProjectAccess::STATUS_ACTIVE,
+        ]);
+
+        ClientProjectAccess::create([
+            'client_id' => $client->id,
+            'project_id' => $revokedProject->id,
+            'status' => ClientProjectAccess::STATUS_REVOKED,
+        ]);
+
+        ClientProjectAccess::create([
+            'client_id' => $otherClient->id,
+            'project_id' => $otherClientProject->id,
+            'status' => ClientProjectAccess::STATUS_ACTIVE,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/projects')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'name' => 'Projecto Activo do Cliente A',
+            ])
+            ->assertJsonMissing([
+                'name' => 'Projecto Revogado do Cliente A',
+            ])
+            ->assertJsonMissing([
+                'name' => 'Projecto do Cliente B',
+            ]);
+    }
+
+    public function test_inactive_client_cannot_list_authorized_projects(): void
+    {
+        $role = $this->createRoleWithPermissions(['projects.view']);
+        $role->update(['slug' => 'client']);
+
+        $user = User::factory()->create();
+        $user->roles()->attach($role);
+
+        $client = Client::create([
+            'name' => 'Cliente Inactivo',
+            'email' => $user->email,
+            'is_active' => false,
+        ]);
+
+        $client->user()->associate($user);
+        $client->save();
+
+        $project = Project::factory()->create([
+            'name' => 'Projecto de Cliente Inactivo',
+        ]);
+
+        ClientProjectAccess::create([
+            'client_id' => $client->id,
+            'project_id' => $project->id,
+            'status' => ClientProjectAccess::STATUS_ACTIVE,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/projects')
+            ->assertOk()
+            ->assertJsonCount(0, 'data')
+            ->assertJsonMissing([
+                'name' => 'Projecto de Cliente Inactivo',
+            ]);
     }
 }
